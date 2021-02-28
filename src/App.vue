@@ -13,7 +13,7 @@ export default {
 
   components: {
     AuthLayout,
-    DashboardLayout
+    DashboardLayout,
   },
 
   computed: {
@@ -22,7 +22,7 @@ export default {
       const routeLayout = this.$route.meta?.layout
 
       return routeLayout ? `${routeLayout}-layout` : defaultLayout
-    }
-  }
+    },
+  },
 }
 </script>
