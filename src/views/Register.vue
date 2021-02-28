@@ -10,7 +10,17 @@
       </v-card-title>
 
       <v-card-text>
-        <v-form @submit.prevent="goLogin">
+        <v-form @submit.prevent="goRegister">
+          <!-- Name -->
+          <v-text-field
+            v-model="form.name"
+            id="name"
+            label="Name"
+            placeholder="Enter you Name"
+            prepend-inner-icon="mdi-account"
+            :error-messages="errorFields.email"
+          ></v-text-field>
+
           <!-- Email -->
           <v-text-field
             v-model="form.email"
@@ -34,14 +44,26 @@
             @click:append="showPassword = !showPassword"
           ></v-text-field>
 
+          <!-- Password Confirmation -->
+          <v-text-field
+            v-model="form.password_confirmation"
+            id="password_confirmation"
+            :type="showPasswordConfirmation ? 'text' : 'password'"
+            label="Repeat Password"
+            prepend-inner-icon="mdi-lock"
+            placeholder="Repeat your password"
+            :append-icon="!showPasswordConfirmation ? 'mdi-eye-off' : 'mdi-eye'"
+            @click:append="showPasswordConfirmation = !showPasswordConfirmation"
+          ></v-text-field>
+
           <!-- Footer -->
           <div class="d-flex justify-space-between align-center">
-            <router-link :to="{ name: 'Register' }"
-              >Don't have an account ?</router-link
+            <router-link :to="{ name: 'Login' }"
+              >Already have an account ?</router-link
             >
 
             <v-btn type="submit" color="primary" :loading="loading"
-              >Login</v-btn
+              >Register</v-btn
             >
           </div>
         </v-form>
@@ -67,11 +89,15 @@ export default {
     errorMsg: null,
     loading: false,
     showPassword: false,
+    showPasswordConfirmation: false,
     form: {
+      name: null,
       email: null,
       password: null,
+      password_confirmation: null,
     },
     errorFields: {
+      name: null,
       email: null,
       password: null,
     },
@@ -79,15 +105,15 @@ export default {
 
   methods: {
     ...mapActions('auth', {
-      loginAction: 'login',
+      registerAction: 'register',
     }),
-    async goLogin() {
+    async goRegister() {
       this.loading = true
       this.errorMsg = null
       hideValidationErrors(this.errorFields)
 
       try {
-        await this.loginAction(this.form)
+        await this.registerAction(this.form)
 
         this.$router.push({
           name: 'Home',
@@ -99,7 +125,7 @@ export default {
           showValidationErrors(err.response.data.data, this.errorFields)
         } else {
           this.errorMsg =
-            err?.response?.data?.message || 'Failed to authenticate user.'
+            err?.response?.data?.message || 'Failed to register user.'
         }
       } finally {
         this.loading = false

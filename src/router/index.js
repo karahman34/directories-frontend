@@ -21,6 +21,14 @@ const routes = [
     },
     component: () => import('@/views/Login.vue'),
   },
+  {
+    path: '/register',
+    name: 'Register',
+    meta: {
+      middleware: 'guest',
+    },
+    component: () => import('@/views/Register.vue'),
+  },
 ]
 
 const router = new VueRouter({
