@@ -90,7 +90,7 @@ export default {
         await this.loginAction(this.form)
 
         this.$router.push({
-          name: 'Home',
+          name: 'Dashboard',
         })
       } catch (err) {
         const errCode = err?.response?.status
