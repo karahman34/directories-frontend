@@ -1,11 +1,11 @@
 <template>
   <v-snackbar
     v-model="show"
-    top
-    centered
-    absolute
+    bottom
+    right
+    rounded="pill"
     class="snackbar-plugin"
-    :color="color"
+    :color="color || 'primary'"
   >
     {{ text }}
 
@@ -61,8 +61,8 @@ export default {
 }
 </script>
 
-<style scoped>
-.snackbar-plugin {
-  top: 20px !important;
+<style lang="scss">
+.snackbar-plugin.v-snack--active {
+  bottom: 15px;
 }
 </style>
