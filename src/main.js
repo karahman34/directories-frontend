@@ -7,12 +7,14 @@ import vuetify from './plugins/vuetify'
 import useMiddleware from './helpers/useMiddleware'
 import http, { checkToken, removeToken } from './plugins/http'
 import snackbar from '@/plugins/snackbar'
+import overlay from './plugins/overlay'
 
 import '@mdi/font/css/materialdesignicons.min.css'
 
 Vue.config.productionTip = false
 Vue.use(http)
 Vue.use(snackbar, store)
+Vue.use(overlay, store)
 
 function runApp() {
   // Use Route Middleware.
