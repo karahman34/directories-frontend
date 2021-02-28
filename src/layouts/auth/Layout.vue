@@ -1,6 +1,6 @@
 <template>
-  <v-app>
-    <v-main class="primary">
+  <v-app id="auth-layout">
+    <v-main id="main" class="primary">
       <v-container>
         <!-- Router View -->
         <slot></slot>
@@ -9,6 +9,6 @@
   </v-app>
 </template>
 
-<script>
-export default {}
-</script>
+<style lang="scss">
+@import '@/assets/authLayout.scss';
+</style>

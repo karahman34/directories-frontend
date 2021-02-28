@@ -8,14 +8,25 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
-  }
+    meta: {
+      middleware: 'auth',
+    },
+    component: Home,
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    meta: {
+      middleware: 'guest',
+    },
+    component: () => import('@/views/Login.vue'),
+  },
 ]
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes
+  routes,
 })
 
 export default router
