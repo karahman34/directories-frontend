@@ -10,6 +10,9 @@
         <used-storage :space="space" :used-space="usedSpace"></used-storage>
       </v-col>
     </v-row>
+
+    <!-- Recent Uploads -->
+    <recent-uploads class="mt-5"></recent-uploads>
   </div>
 </template>
 
@@ -17,6 +20,7 @@
 import { mapActions, mapState } from 'vuex'
 import OverallUsage from '@/components/Storage/OverallUsage'
 import UsedStorage from '@/components/Storage/UsedStorage'
+import RecentUploads from '@/components/RecentUploads'
 
 export default {
   name: 'DashboardPage',
@@ -24,6 +28,7 @@ export default {
   components: {
     OverallUsage,
     UsedStorage,
+    RecentUploads,
   },
 
   data: () => ({
