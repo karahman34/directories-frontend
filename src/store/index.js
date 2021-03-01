@@ -6,6 +6,13 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    menus: [
+      {
+        text: 'Dashboard',
+        icon: 'mdi-view-dashboard',
+        to: { name: 'Dashboard' },
+      },
+    ],
     snackbar: {
       text: null,
       color: null,

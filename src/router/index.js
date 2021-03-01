@@ -9,6 +9,7 @@ const routes = [
     path: '/',
     name: 'Dashboard',
     meta: {
+      layout: 'dashboard',
       middleware: 'auth',
     },
     component: Home,
