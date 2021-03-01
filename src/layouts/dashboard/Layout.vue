@@ -22,11 +22,13 @@
         <navbar-desktop class="d-none d-lg-block"></navbar-desktop>
 
         <!-- Route Name -->
-        <div class="mb-3 d-flex align-center">
-          <v-icon class="text-h5 mr-2 primary--text">{{
+        <div class="my-2 mt-lg-0 mb-lg-3 d-flex align-center">
+          <v-icon class="text-h5 mr-2 blue-grey--text text--darken-3">{{
             currentRoute.icon
           }}</v-icon>
-          <span class="text-h5">{{ currentRoute.text }}</span>
+          <span class="text-h5 blue-grey--text text--darken-3">{{
+            currentRoute.text
+          }}</span>
         </div>
 
         <!-- Router View -->
