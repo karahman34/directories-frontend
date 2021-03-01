@@ -18,7 +18,10 @@ export default new Vuex.Store({
       text: null,
       color: null,
     },
-    overlay: false,
+    overlay: {
+      show: false,
+      text: null,
+    },
   },
   mutations: {
     SET_SNACKBAR(state, { text, color }) {

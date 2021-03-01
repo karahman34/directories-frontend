@@ -1,11 +1,17 @@
 export default {
   install: (Vue, store) => {
     Vue.prototype.$overlay = {
-      show: () => {
-        store.commit('SET_OVERLAY', true)
+      show: (text = '') => {
+        store.commit('SET_OVERLAY', {
+          show: true,
+          text,
+        })
       },
       hide: () => {
-        store.commit('SET_OVERLAY', false)
+        store.commit('SET_OVERLAY', {
+          show: false,
+          text: null,
+        })
       },
     }
   },
