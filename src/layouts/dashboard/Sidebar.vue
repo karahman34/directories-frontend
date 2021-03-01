@@ -7,7 +7,13 @@
 
     <!-- List of menus -->
     <v-list dense nav>
-      <v-list-item v-for="menu in menus" :key="menu.title" link :to="menu.to">
+      <v-list-item
+        v-for="menu in menus"
+        :key="menu.title"
+        link
+        exact
+        :to="menu.to"
+      >
         <v-list-item-icon>
           <v-icon>{{ menu.icon }}</v-icon>
         </v-list-item-icon>
