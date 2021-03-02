@@ -3,4 +3,5 @@ export default {
   usedSpace: null,
   recentUploads: null,
   root: null,
+  search: null,
 }

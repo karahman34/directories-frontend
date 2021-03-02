@@ -32,9 +32,10 @@ import { mapActions, mapMutations, mapState } from 'vuex'
 import { isFile } from '@/helpers/file'
 import DirectoryTable from '@/components/Tables/DirectoryTable'
 import folderApi from '@/api/folderApi'
-import { setDirectoryObject } from '@/helpers/storage'
+import { setDirectoryObject, setSubFoldersObject } from '@/helpers/storage'
 import CreateFolderDialog from '@/components/Dialogs/CreateFolderDialog'
 import CreateFileDialog from '@/components/Dialogs/CreateFileDialog'
+import userApi from '@/api/userApi'
 
 export default {
   name: 'DrivePage',
@@ -54,21 +55,43 @@ export default {
       getDirectoriesLoading: false,
       showCreateFolderDialog: false,
       showCreateFileDialog: false,
+      itemChange: false,
     }
   },
 
   computed: {
     ...mapState('storage', {
       rootState: state => state.root,
+      searchState: state => state.search,
     }),
+    searchActive() {
+      return this.searchState !== null && this.searchState.length
+    },
   },
 
-  mounted() {
-    if (this.rootState === null) {
-      this.getRootDirectory()
-    } else {
-      this.startRoot()
-    }
+  watch: {
+    searchState: {
+      immediate: true,
+      handler() {
+        if (this.searchActive) {
+          this.root = null
+          this.activeDirectory = null
+          this.currentDirectories = []
+          this.breadcrumbItems = []
+
+          this.searchDirectories()
+        } else if (this.rootState === null) {
+          this.getRootDirectory()
+        } else {
+          this.startRoot()
+        }
+      },
+    },
+    itemChange(value) {
+      if (value && this.searchActive) {
+        this.setRootMutation(null)
+      }
+    },
   },
 
   methods: {
@@ -119,18 +142,44 @@ export default {
         this.getDirectoriesLoading = false
       }
     },
+    async searchDirectories() {
+      this.getDirectoriesLoading = true
+
+      try {
+        const res = await userApi.search({
+          q: this.searchState,
+        })
+        const { data } = res.data
+        const { folders, files } = data
+
+        setSubFoldersObject(folders)
+
+        this.currentDirectories = [...folders, ...files]
+      } catch (err) {
+        this.$snackbar.show({
+          color: 'red',
+          text: err?.response?.data?.message || 'Failed to search directories.',
+        })
+      } finally {
+        this.getDirectoriesLoading = false
+      }
+    },
     startRoot() {
       this.root = { ...this.rootState }
       this.activeDirectory = this.root
-      this.breadcrumbItems.push({
-        root: true,
-        directory: this.activeDirectory,
-      })
+      this.breadcrumbItems = [
+        {
+          root: true,
+          directory: this.activeDirectory,
+        },
+      ]
 
       this.setCurrentDirectories()
     },
     syncLocalRoot() {
-      this.setRootMutation(this.root)
+      if (!this.searchActive) {
+        this.setRootMutation(this.root)
+      }
     },
     setCurrentDirectories() {
       this.currentDirectories = this.activeDirectory.directories
@@ -139,9 +188,17 @@ export default {
       if (isFile(directory)) return
 
       this.activeDirectory = directory
-      this.breadcrumbItems.push({
-        directory: this.activeDirectory,
-      })
+
+      if (this.searchActive && !this.breadcrumbItems.length) {
+        this.breadcrumbItems.push({
+          search: true,
+          directory: this.activeDirectory,
+        })
+      } else {
+        this.breadcrumbItems.push({
+          directory: this.activeDirectory,
+        })
+      }
 
       if (this.activeDirectory.directories === null) {
         return this.getChildDirectories()
@@ -187,10 +244,18 @@ export default {
 
       this.currentDirectories.unshift(folder)
       this.syncLocalRoot()
+
+      if (this.searchActive) {
+        this.itemChange = true
+      }
     },
     fileCreatedHandler(file) {
       this.currentDirectories.unshift(file)
       this.syncLocalRoot()
+
+      if (this.searchActive) {
+        this.itemChange = true
+      }
     },
   },
 }

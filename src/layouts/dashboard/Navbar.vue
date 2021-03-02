@@ -9,13 +9,13 @@
       dark
       solo
       dense
+      clearable
       hide-details
       class="search-box"
-      background-color="blue-grey darken-3"
       placeholder="Search.."
+      background-color="blue-grey darken-3"
       prepend-inner-icon="mdi-magnify"
-      :append-icon="search.length ? 'mdi-close' : null"
-      @click:append="search = ''"
+      @click:clear="search = null"
     ></v-text-field>
 
     <!-- Spacer -->
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import { mapMutations, mapState } from 'vuex'
 import UserDropdown from './components/UserDropdown'
 
 export default {
@@ -36,7 +37,41 @@ export default {
 
   data: () => ({
     search: '',
+    searchTimeout: null,
   }),
+
+  computed: {
+    ...mapState('storage', {
+      searchState: state => state.search,
+    }),
+  },
+
+  watch: {
+    search(val) {
+      clearTimeout(this.searchTimeout)
+
+      this.searchTimeout = setTimeout(() => {
+        this.setSearch(val)
+
+        if (this.$route.name !== 'Drive') {
+          this.$router.push({
+            name: 'Drive',
+          })
+        }
+      }, 350)
+    },
+    searchState(val) {
+      if (val !== this.search) {
+        this.search = val
+      }
+    },
+  },
+
+  methods: {
+    ...mapMutations('storage', {
+      setSearch: 'SET_SEARCH',
+    }),
+  },
 }
 </script>
 

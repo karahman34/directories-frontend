@@ -35,6 +35,15 @@
                   <span class="ml-2">{{ item.directory.name }}</span>
                 </div>
 
+                <!-- Search -->
+                <div
+                  v-else-if="item && item.search === true"
+                  class="d-flex align-center"
+                >
+                  <v-icon class="grey--text text--darken-1">mdi-magnify</v-icon>
+                  <span class="ml-2">{{ item.directory.name }}</span>
+                </div>
+
                 <!-- Normal -->
                 <template v-else>
                   {{ item.directory.name }}

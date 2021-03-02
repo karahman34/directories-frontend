@@ -1,7 +1,7 @@
 <template>
   <div class="search-box d-flex align-center">
     <v-btn
-      v-if="!showSearch"
+      v-if="!showSearch && (searchState === null || !searchState.length)"
       rounded
       class="search-box-toggle primary elevation-0"
       @click="showSearch = true"
@@ -18,25 +18,34 @@
         solo
         dense
         rounded
+        clearable
         hide-details
         class="search-box-input"
         background-color="primary"
         placeholder="Search.."
         prepend-inner-icon="mdi-magnify"
-        append-icon="mdi-close"
-        @click:append="showSearch = false"
+        @click:clear="search = null"
       ></v-text-field>
     </transition>
   </div>
 </template>
 
 <script>
+import { mapMutations, mapState } from 'vuex'
+
 export default {
   data() {
     return {
       showSearch: false,
       search: '',
+      searchTimeout: null,
     }
+  },
+
+  computed: {
+    ...mapState('storage', {
+      searchState: state => state.search,
+    }),
   },
 
   watch: {
@@ -45,6 +54,30 @@ export default {
         this.$nextTick(() => this.$refs.searchBox.focus())
       }
     },
+    search(val) {
+      clearTimeout(this.searchTimeout)
+
+      this.searchTimeout = setTimeout(() => {
+        this.setSearch(val)
+
+        if (this.$route.name !== 'Drive') {
+          this.$router.push({
+            name: 'Drive',
+          })
+        }
+      }, 350)
+    },
+    searchState(val) {
+      if (val !== this.search) {
+        this.search = val
+      }
+    },
+  },
+
+  methods: {
+    ...mapMutations('storage', {
+      setSearch: 'SET_SEARCH',
+    }),
   },
 }
 </script>
