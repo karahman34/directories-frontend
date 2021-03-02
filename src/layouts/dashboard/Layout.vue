@@ -17,7 +17,7 @@
     <snackbar></snackbar>
 
     <v-main id="main-section" class="pt-lg-0 grey lighten-3 primary--text">
-      <v-container class="px-lg-6 py-1 mx-0">
+      <v-container class="px-lg-6 py-1">
         <!-- Navbar Desktop -->
         <navbar-desktop class="d-none d-lg-block"></navbar-desktop>
 
