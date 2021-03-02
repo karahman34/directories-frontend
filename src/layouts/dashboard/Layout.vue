@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import Navbar from './Navbar'
 import NavbarDesktop from './NavbarDesktop'
 import Sidebar from './Sidebar'
@@ -70,6 +70,30 @@ export default {
     }),
     currentRoute() {
       return this.menus.find(menu => menu.to.name === this.$route.name)
+    },
+  },
+
+  mounted() {
+    this.getStorage()
+  },
+
+  methods: {
+    ...mapActions('storage', {
+      getStorageAction: 'getStorage',
+    }),
+    async getStorage() {
+      this.$overlay.show('Fetching user storage...')
+
+      try {
+        await this.getStorageAction()
+      } catch (err) {
+        this.$snackbar.show({
+          color: 'red',
+          text: err?.response?.data?.message || 'Failed to get storage data.',
+        })
+      } finally {
+        this.$overlay.hide()
+      }
     },
   },
 }
