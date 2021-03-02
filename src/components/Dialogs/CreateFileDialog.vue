@@ -88,7 +88,7 @@ export default {
 
   methods: {
     ...mapMutations('storage', {
-      addRecentUploads: 'ADD_RECENT_UPLOADS',
+      addRecentUpload: 'ADD_RECENT_UPLOAD',
     }),
     async createFile() {
       this.loading = true
@@ -106,7 +106,7 @@ export default {
         this.$emit('created', data)
 
         this.dialog = false
-        this.addRecentUploads(data)
+        this.addRecentUpload(data)
 
         this.$snackbar.show({
           text: 'File successfully uploaded.',
