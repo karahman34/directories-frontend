@@ -45,7 +45,7 @@
 
           <!-- Utilities -->
           <div class="utilities">
-            <div class="utilities-item">
+            <div class="utilities-item" @click="$emit('click:newFolder')">
               <v-icon class="utilities-icon">mdi-folder-plus</v-icon>
               <span class="utilities-text">New Folder</span>
             </div>

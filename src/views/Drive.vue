@@ -7,7 +7,15 @@
       @sort:size="sortBySize"
       @click:row="rowClickHandler"
       @click:breadcrumbs="breadcrumbsClickHandler"
+      @click:newFolder="showCreateFolderDialog = !showCreateFolderDialog"
     ></directory-table>
+
+    <create-folder-dialog
+      v-if="activeDirectory"
+      v-model="showCreateFolderDialog"
+      :folder-id="activeDirectory.id"
+      @created="folderCreatedHandler"
+    ></create-folder-dialog>
   </div>
 </template>
 
@@ -17,12 +25,14 @@ import { isFile } from '@/helpers/file'
 import DirectoryTable from '@/components/Tables/DirectoryTable'
 import folderApi from '@/api/folderApi'
 import { setDirectoryObject } from '@/helpers/storage'
+import CreateFolderDialog from '@/components/Dialogs/CreateFolderDialog'
 
 export default {
   name: 'DrivePage',
 
   components: {
     DirectoryTable,
+    CreateFolderDialog,
   },
 
   data() {
@@ -32,6 +42,7 @@ export default {
       activeDirectory: null,
       currentDirectories: [],
       getDirectoriesLoading: false,
+      showCreateFolderDialog: false,
     }
   },
 
@@ -156,6 +167,15 @@ export default {
           }
         }
       })
+    },
+    folderCreatedHandler(folder) {
+      folder.directories = null
+
+      delete folder.files
+      delete folder.sub_folders
+
+      this.currentDirectories.unshift(folder)
+      this.syncLocalRoot()
     },
   },
 }
