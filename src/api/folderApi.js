@@ -16,6 +16,6 @@ export default {
     return http.patch(`${prefix}/${folderId}`, payload)
   },
   delete(folderId) {
-    return http.patch(`${prefix}/${folderId}`)
+    return http.delete(`${prefix}/${folderId}`)
   },
 }
