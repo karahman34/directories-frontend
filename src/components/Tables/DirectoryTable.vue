@@ -1,5 +1,5 @@
 <template>
-  <v-card flat class="directory-table-card pb-md-2">
+  <v-card flat class="directory-table-card pb-md-2 px-2">
     <v-data-table
       class="directory-table"
       dense
