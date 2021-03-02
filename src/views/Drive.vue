@@ -10,6 +10,7 @@
       @click:breadcrumbs="breadcrumbsClickHandler"
       @click:newFolder="showCreateFolderDialog = !showCreateFolderDialog"
       @click:newFile="showCreateFileDialog = !showCreateFileDialog"
+      @contextmenu:row="contextMenuHandler"
     ></directory-table>
 
     <!-- The Create Folder Dialog -->
@@ -27,6 +28,18 @@
       :folder-id="activeDirectory.id"
       @created="fileCreatedHandler"
     ></create-file-dialog>
+
+    <!-- The Context Menu -->
+    <context-menu
+      v-if="contextMenu.item !== null"
+      :position-x="contextMenu.x"
+      :position-y="contextMenu.y"
+      :item="contextMenu.item"
+      @hide="hideContextMenu"
+      @open:folder="rowClickHandler"
+      @delete:file="fileOrFolderDeletedHandler"
+      @delete:folder="fileOrFolderDeletedHandler"
+    ></context-menu>
   </div>
 </template>
 
@@ -39,6 +52,7 @@ import { setDirectoryObject, setSubFoldersObject } from '@/helpers/storage'
 import CreateFolderDialog from '@/components/Dialogs/CreateFolderDialog'
 import CreateFileDialog from '@/components/Dialogs/CreateFileDialog'
 import userApi from '@/api/userApi'
+import ContextMenu from '@/components/ContextMenu'
 
 export default {
   name: 'DrivePage',
@@ -47,6 +61,7 @@ export default {
     DirectoryTable,
     CreateFolderDialog,
     CreateFileDialog,
+    ContextMenu,
   },
 
   data() {
@@ -59,6 +74,11 @@ export default {
       showCreateFolderDialog: false,
       showCreateFileDialog: false,
       itemChange: false,
+      contextMenu: {
+        item: null,
+        x: null,
+        y: null,
+      },
     }
   },
 
@@ -255,6 +275,28 @@ export default {
     fileCreatedHandler(file) {
       this.currentDirectories.unshift(file)
       this.syncLocalRoot()
+
+      if (this.searchActive) {
+        this.itemChange = true
+      }
+    },
+    hideContextMenu() {
+      this.contextMenu.item = null
+      this.contextMenu.x = null
+      this.contextMenu.y = null
+    },
+    contextMenuHandler(e, item) {
+      this.contextMenu.item = item
+      this.contextMenu.x = e.pageX
+      this.contextMenu.y = e.pageY
+    },
+    fileOrFolderDeletedHandler(item) {
+      this.syncLocalRoot()
+
+      this.currentDirectories.splice(
+        this.currentDirectories.findIndex(x => x.id === item.id),
+        1,
+      )
 
       if (this.searchActive) {
         this.itemChange = true

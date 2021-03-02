@@ -18,6 +18,19 @@ export default {
   ADD_RECENT_UPLOAD(state, file) {
     state.recentUploads.push(file)
   },
+  REMOVE_RECENT_UPLOAD(state, file) {
+    state.usedSpace -= file.size
+
+    if (Array.isArray(state.recentUploads)) {
+      const targetIndex = state.recentUploads.findIndex(
+        _file => _file.id === file.id,
+      )
+
+      if (targetIndex >= 0) {
+        state.recentUploads.splice(targetIndex, 1)
+      }
+    }
+  },
   SET_ROOT(state, root) {
     state.root = root
   },

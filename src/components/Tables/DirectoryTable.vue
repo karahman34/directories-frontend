@@ -11,6 +11,7 @@
       :options.sync="options"
       hide-default-footer
       @dblclick:row="rowDoubleClickHandler"
+      @contextmenu:row="contextMenuHandler"
     >
       <!-- Slot Top -->
       <template v-slot:top>
@@ -216,6 +217,11 @@ export default {
       if (sortBy[0] === 'size') {
         this.$emit('sort:size', sortDesc[0])
       }
+    },
+    contextMenuHandler(e, val) {
+      e.preventDefault()
+
+      this.$emit('contextmenu:row', e, val.item)
     },
   },
 }
