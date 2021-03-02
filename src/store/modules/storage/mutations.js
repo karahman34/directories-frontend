@@ -8,6 +8,10 @@ export default {
   SET_RECENT_UPLOADS(state, files) {
     state.recentUploads = files
   },
+  ADD_RECENT_UPLOADS(state, file) {
+    state.recentUploads.unshift(file)
+    state.usedSpace += file.size
+  },
   ADD_RECENT_UPLOAD(state, file) {
     state.recentUploads.push(file)
   },

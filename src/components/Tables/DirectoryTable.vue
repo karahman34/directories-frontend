@@ -50,7 +50,7 @@
               <span class="utilities-text">New Folder</span>
             </div>
 
-            <div class="utilities-item">
+            <div class="utilities-item" @click="$emit('click:newFile')">
               <v-icon class="utilities-icon">mdi-file-plus</v-icon>
               <span class="utilities-text">New File</span>
             </div>
