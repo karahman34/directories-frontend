@@ -9,13 +9,19 @@ export default {
     state.recentUploads = files
   },
   ADD_RECENT_UPLOADS(state, file) {
-    state.recentUploads.unshift(file)
     state.usedSpace += file.size
+
+    if (Array.isArray(state.recentUploads)) {
+      state.recentUploads.unshift(file)
+    }
   },
   ADD_RECENT_UPLOAD(state, file) {
     state.recentUploads.push(file)
   },
   SET_ROOT(state, root) {
     state.root = root
+  },
+  SET_SEARCH(state, search) {
+    state.search = search
   },
 }
