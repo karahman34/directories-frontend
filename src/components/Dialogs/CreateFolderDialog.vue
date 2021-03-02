@@ -4,6 +4,12 @@
       <v-card-title>
         <v-icon class="grey--text text--darken-1">mdi-folder-plus</v-icon>
         <span class="ml-2 grey--text text--darken-1">New Folder</span>
+
+        <v-spacer></v-spacer>
+
+        <v-btn icon @click="dialog = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-card-title>
 
       <v-card-text>
