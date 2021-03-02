@@ -43,7 +43,7 @@
 
 <script>
 import { mapMutations } from 'vuex'
-import { isFile, isImage } from '@/helpers/file'
+import { fullFileName, isFile, isImage } from '@/helpers/file'
 import fileApi from '@/api/fileApi'
 import folderApi from '@/api/folderApi'
 
@@ -164,7 +164,7 @@ export default {
         await fileApi.delete(this.item.id)
 
         this.$snackbar.show({
-          text: `${this.item.name} was successfully deleted.`,
+          text: `${fullFileName(this.item)} was successfully deleted.`,
         })
 
         this.emitHideEvent()
