@@ -54,7 +54,7 @@ export default {
     }),
     async getStorage() {
       this.getStorageLoading = true
-      this.$overlay.show()
+      this.$overlay.show('Fetching user storage...')
 
       try {
         await this.getStorageAction()
