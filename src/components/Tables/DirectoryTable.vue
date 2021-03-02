@@ -210,7 +210,7 @@ export default {
       return getIconFile(item)
     },
     rowDoubleClickHandler(e, val) {
-      this.$emit('click:row', val.item)
+      this.$emit('dblClick:row', val.item)
     },
     sortHandler(sortBy, sortDesc) {
       if (sortBy[0] === 'size') {

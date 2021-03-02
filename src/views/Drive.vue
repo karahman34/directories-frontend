@@ -6,7 +6,7 @@
       :loading="getDirectoriesLoading"
       :directories="currentDirectories"
       @sort:size="sortBySize"
-      @click:row="rowClickHandler"
+      @dblClick:row="rowClickHandler"
       @click:breadcrumbs="breadcrumbsClickHandler"
       @click:newFolder="showCreateFolderDialog = !showCreateFolderDialog"
       @click:newFile="showCreateFileDialog = !showCreateFileDialog"
