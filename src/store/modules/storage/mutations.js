@@ -11,4 +11,7 @@ export default {
   ADD_RECENT_UPLOAD(state, file) {
     state.recentUploads.push(file)
   },
+  SET_ROOT(state, root) {
+    state.root = root
+  },
 }

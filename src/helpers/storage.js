@@ -1,13 +1,27 @@
 function byteToKb(bytes) {
-  return bytes / 1024
+  return Number(bytes / 1024)
 }
 
 function byteToMb(bytes) {
-  return byteToKb(bytes) / 1024
+  return Number(byteToKb(bytes) / 1024)
 }
 
 function byteToGb(bytes) {
-  return byteToMb(bytes) / 1024
+  return Number(byteToMb(bytes) / 1024)
 }
 
-export { byteToKb, byteToMb, byteToGb }
+function setDirectoryObject(directory) {
+  directory.sub_folders.forEach(el => {
+    el.directories = null
+
+    delete el.files
+    delete el.sub_folders
+  })
+
+  directory.directories = [...directory.sub_folders, ...directory.files]
+
+  delete directory.files
+  delete directory.sub_folders
+}
+
+export { byteToKb, byteToMb, byteToGb, setDirectoryObject }

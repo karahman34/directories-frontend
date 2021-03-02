@@ -30,6 +30,15 @@ const routes = [
     },
     component: () => import('@/views/Register.vue'),
   },
+  {
+    path: '/drive',
+    name: 'Drive',
+    meta: {
+      layout: 'dashboard',
+      middleware: 'auth',
+    },
+    component: () => import('@/views/Drive.vue'),
+  },
 ]
 
 const router = new VueRouter({

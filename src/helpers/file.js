@@ -4,6 +4,25 @@ function isImage(file) {
   return pattern.test(file.mime_type)
 }
 
+function isFile(file) {
+  return (
+    Object.prototype.hasOwnProperty.call(file, 'path') &&
+    Object.prototype.hasOwnProperty.call(file, 'extension') &&
+    Object.prototype.hasOwnProperty.call(file, 'mime_type')
+  )
+}
+
+function formatFileSize(size) {
+  size = size.toString()
+  const dot = size.indexOf('.')
+
+  if (dot === -1) {
+    return size
+  }
+
+  return size.slice(0, dot + 2)
+}
+
 function fullFileName(file) {
   return `${file.name}.${file.extension}`
 }
@@ -28,4 +47,4 @@ function getIconFile(file) {
   }
 }
 
-export { isImage, fullFileName, getIconFile }
+export { isImage, fullFileName, getIconFile, isFile, formatFileSize }

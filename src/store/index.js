@@ -13,6 +13,11 @@ export default new Vuex.Store({
         icon: 'mdi-view-dashboard',
         to: { name: 'Dashboard' },
       },
+      {
+        text: 'Drive',
+        icon: 'mdi-cloud',
+        to: { name: 'Drive' },
+      },
     ],
     snackbar: {
       text: null,
