@@ -120,6 +120,7 @@ export default {
   methods: {
     ...mapMutations('storage', {
       setRootMutation: 'SET_ROOT',
+      setRecentUploads: 'SET_RECENT_UPLOADS',
     }),
     ...mapActions('storage', {
       getRootDirectoryAction: 'getRootDirectory',
@@ -291,12 +292,19 @@ export default {
       this.contextMenu.y = e.pageY
     },
     fileOrFolderDeletedHandler(item) {
-      this.syncLocalRoot()
+      if (
+        !isFile(item) &&
+        (item.directories === null || (item && item.directories.length))
+      ) {
+        this.setRecentUploads(null)
+      }
 
       this.currentDirectories.splice(
         this.currentDirectories.findIndex(x => x.id === item.id),
         1,
       )
+
+      this.syncLocalRoot()
 
       if (this.searchActive) {
         this.itemChange = true
