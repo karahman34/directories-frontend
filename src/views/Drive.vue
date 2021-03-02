@@ -1,5 +1,6 @@
 <template>
   <div id="drive-page">
+    <!-- The Directory Table -->
     <directory-table
       :breadcrumb-items="breadcrumbItems"
       :loading="getDirectoriesLoading"
@@ -11,6 +12,7 @@
       @click:newFile="showCreateFileDialog = !showCreateFileDialog"
     ></directory-table>
 
+    <!-- The Create Folder Dialog -->
     <create-folder-dialog
       v-if="activeDirectory"
       v-model="showCreateFolderDialog"
@@ -18,6 +20,7 @@
       @created="folderCreatedHandler"
     ></create-folder-dialog>
 
+    <!-- The Create File Dialog -->
     <create-file-dialog
       v-if="activeDirectory"
       v-model="showCreateFileDialog"
