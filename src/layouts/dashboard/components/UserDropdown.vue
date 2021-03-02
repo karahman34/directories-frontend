@@ -1,5 +1,5 @@
 <template>
-  <v-menu offset-y>
+  <v-menu offset-y rounded="md">
     <!-- Activator -->
     <template v-slot:activator="{ on }">
       <v-btn text class="activator d-lg-none" v-on="on">
