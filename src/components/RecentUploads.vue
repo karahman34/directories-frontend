@@ -41,6 +41,7 @@
               flat
               height="200px"
               class="d-flex justify-center align-center"
+              @contextmenu.prevent="contextMenuHandler($event, file)"
             >
               <!-- File -->
               <v-icon v-if="!isImage(file)" class="text-h1">{{
@@ -59,18 +60,37 @@
         </v-row>
       </v-carousel-item>
     </v-carousel>
+
+    <!-- The Context Menu -->
+    <context-menu
+      v-if="contextMenu.item !== null"
+      :position-x="contextMenu.x"
+      :position-y="contextMenu.y"
+      :item="contextMenu.item"
+      @hide="hideContextMenu"
+    ></context-menu>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
 import { fullFileName, getIconFile, isImage } from '@/helpers/file'
+import ContextMenu from '@/components/ContextMenu'
 
 export default {
+  components: {
+    ContextMenu,
+  },
+
   data() {
     return {
       loading: false,
       perItem: 6,
+      contextMenu: {
+        item: null,
+        x: null,
+        y: null,
+      },
     }
   },
 
@@ -154,6 +174,16 @@ export default {
     },
     removeResizeEvent() {
       window.removeEventListener('resize', this.setPerItem)
+    },
+    hideContextMenu() {
+      this.contextMenu.item = null
+      this.contextMenu.x = null
+      this.contextMenu.y = null
+    },
+    contextMenuHandler(e, file) {
+      this.contextMenu.item = file
+      this.contextMenu.x = e.pageX
+      this.contextMenu.y = e.pageY
     },
   },
 
