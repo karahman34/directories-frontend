@@ -98,7 +98,7 @@ export default {
         this.dialog = false
 
         this.$snackbar.show({
-          text: 'Folder created',
+          text: 'Folder created.',
         })
       } catch (err) {
         const errCode = err?.response?.status
