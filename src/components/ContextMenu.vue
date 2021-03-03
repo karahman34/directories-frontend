@@ -70,32 +70,27 @@ export default {
         {
           icon: 'mdi-folder-open',
           text: 'Open',
-          hidden: true,
           method: () => this.openHandler(),
         },
         {
           icon: 'mdi-magnify',
           text: 'Preview',
-          hidden: true,
           method: () => this.previewHandler(),
         },
         {
           icon: 'mdi-pencil',
           text: 'Edit',
-          hidden: true,
           method: () => this.$emit('edit:folder', this.item),
         },
         {
           icon: 'mdi-download',
           text: 'Download',
-          hidden: true,
           method: () => this.downloadHandler(),
         },
         {
           icon: 'mdi-trash-can',
           text: 'Delete',
           loading: false,
-          hidden: false,
           method: menu => this.deleteHandler(menu),
         },
       ],
@@ -103,8 +98,31 @@ export default {
   },
 
   computed: {
+    isImage() {
+      return isImage(this.item)
+    },
+    isFile() {
+      return isFile(this.item)
+    },
+    isFolder() {
+      return !this.isFile
+    },
     availableMenus() {
-      return this.menus.filter(menu => menu.hidden === false)
+      return this.menus.filter(menu => {
+        const name = menu.text.toLowerCase()
+
+        if (name === 'open') {
+          return this.setOpen()
+        } else if (name === 'edit') {
+          return this.setEdit()
+        } else if (name === 'preview') {
+          return this.setPreview()
+        } else if (name === 'download') {
+          return this.setDownload()
+        } else {
+          return true
+        }
+      })
     },
   },
 
@@ -113,13 +131,6 @@ export default {
       if (!value) {
         this.emitHideEvent()
       }
-    },
-    item: {
-      deep: true,
-      immediate: true,
-      handler() {
-        this.setAvailableMenus()
-      },
     },
   },
 
@@ -137,26 +148,16 @@ export default {
       this.setDownload()
     },
     setOpen() {
-      const open = this.menus.find(menu => menu.text === 'Open')
-
-      open.hidden = !isFile(this.item) ? false : true
+      return this.isFolder
     },
     setPreview() {
-      const preview = this.menus.find(menu => menu.text === 'Preview')
-
-      preview.hidden = isImage(this.item) ? false : true
+      return this.isImage
     },
     setEdit() {
-      if (!isFile(this.item) && !isImage(this.item)) {
-        const edit = this.menus.find(menu => menu.text === 'Edit')
-
-        edit.hidden = false
-      }
+      return this.isFolder
     },
     setDownload() {
-      const download = this.menus.find(menu => menu.text === 'Download')
-
-      download.hidden = isFile(this.item) ? false : true
+      return this.isFile
     },
     openHandler() {
       this.$emit('open:folder', this.item)
