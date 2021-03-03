@@ -1,7 +1,9 @@
 <template>
-  <v-app-bar flat color="transparent" class="navbar-desktop">
+  <v-app-bar flat color="grey lighten-3" class="navbar-desktop">
     <!-- Greet -->
-    <div class="text-h4">Hi, {{ firstName }}</div>
+    <div class="text-h4 blue-grey--text text--darken-3">
+      Hi, {{ firstName }}
+    </div>
 
     <!-- Spacer -->
     <v-spacer></v-spacer>
@@ -40,6 +42,7 @@ export default {
 .navbar-desktop {
   position: sticky;
   top: 0;
+  z-index: 2;
 
   .v-toolbar__content {
     padding-right: 0 !important;
