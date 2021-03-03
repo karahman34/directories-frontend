@@ -64,7 +64,6 @@ export default {
       loading: false,
       form: {
         name: null,
-        parent_folder_id: null,
       },
       errorsField: {
         name: null,
@@ -84,7 +83,6 @@ export default {
         this.dialog = value
         this.errorsField.name = null
         this.form.name = this.folder.name
-        this.form.parent_folder_id = this.folder.parent_folder_id
       },
     },
   },
