@@ -2,9 +2,11 @@
   <div id="drive-page">
     <!-- The Directory Table -->
     <directory-table
+      v-model="selectedItems"
       :breadcrumb-items="breadcrumbItems"
       :loading="getDirectoriesLoading"
       :directories="currentDirectories"
+      :show-select="!searchActive"
       @dblClick:row="rowClickHandler"
       @click:breadcrumbs="breadcrumbsClickHandler"
       @click:newFolder="showCreateFolderDialog = !showCreateFolderDialog"
@@ -51,6 +53,17 @@
       @delete:file="fileOrFolderDeletedHandler"
       @delete:folder="fileOrFolderDeletedHandler"
     ></context-menu>
+
+    <!-- FAB Stock -->
+    <fab-stock>
+      <!-- The Batch Delete FAB -->
+      <batch-delete-button
+        v-if="!searchActive && selectedItems.length"
+        :items="selectedItems"
+        :parent-folder-id="activeDirectory.id"
+        @deleted="batchItemsDeletedHandler"
+      ></batch-delete-button>
+    </fab-stock>
   </div>
 </template>
 
@@ -60,6 +73,8 @@ import { isFile } from '@/helpers/file'
 import userApi from '@/api/userApi'
 import folderApi from '@/api/folderApi'
 import { setDirectoryObject, setSubFoldersObject } from '@/helpers/storage'
+import FABStock from '@/components/FAB/FABStock'
+import BatchDeleteButton from '@/components/FAB/BatchDeleteButton'
 import CreateFolderDialog from '@/components/Dialogs/CreateFolderDialog'
 import CreateFileDialog from '@/components/Dialogs/CreateFileDialog'
 import ContextMenu from '@/components/ContextMenu'
@@ -70,6 +85,8 @@ export default {
   name: 'DrivePage',
 
   components: {
+    'fab-stock': FABStock,
+    BatchDeleteButton,
     DirectoryTable,
     ContextMenu,
     CreateFolderDialog,
@@ -81,6 +98,7 @@ export default {
     return {
       root: null,
       breadcrumbItems: [],
+      selectedItems: [],
       activeDirectory: null,
       currentDirectories: [],
       getDirectoriesLoading: false,
@@ -318,6 +336,19 @@ export default {
       if (this.searchActive) {
         this.itemChange = true
       }
+    },
+    batchItemsDeletedHandler(items) {
+      const deletedIds = items.map(item => item.id)
+
+      this.activeDirectory.directories = this.currentDirectories.filter(
+        dir => !deletedIds.includes(dir.id),
+      )
+
+      this.selectedItems = []
+
+      this.syncLocalRoot()
+      this.setRecentUploads(null)
+      this.setCurrentDirectories()
     },
   },
 }

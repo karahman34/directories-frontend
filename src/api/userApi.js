@@ -12,4 +12,7 @@ export default {
   search(params = null) {
     return http.get(`${prefix}/search`, { params })
   },
+  batchDelete(payload) {
+    return http.post(`${prefix}/storage/batch-delete`, payload)
+  },
 }

@@ -1,13 +1,14 @@
 <template>
   <v-card flat class="directory-table-card pb-md-2 px-2">
     <v-data-table
+      v-model="selected"
       class="directory-table"
       dense
-      show-select
       disable-pagination
       :loading="loading"
       :headers="headers"
       :items="directories"
+      :show-select="showSelect"
       hide-default-footer
       @dblclick:row="rowDoubleClickHandler"
       @contextmenu:row="contextMenuHandler"
@@ -146,6 +147,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    showSelect: {
+      type: Boolean,
+      required: true,
+    },
   },
 
   data: () => ({
@@ -167,7 +172,14 @@ export default {
         value: 'created_at',
       },
     ],
+    selected: [],
   }),
+
+  watch: {
+    selected(selected) {
+      return this.$emit('input', selected)
+    },
+  },
 
   methods: {
     isFile(item) {
