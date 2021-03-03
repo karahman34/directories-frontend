@@ -78,11 +78,14 @@ export default {
         this.$emit('change', dialog)
       }
     },
-    value(val) {
-      this.dialog = val
-      this.errorsField.name = null
-      this.form.name = this.folder.name
-      this.form.parent_folder_id = this.folder.parent_folder_id
+    value: {
+      immediate: true,
+      handler(value) {
+        this.dialog = value
+        this.errorsField.name = null
+        this.form.name = this.folder.name
+        this.form.parent_folder_id = this.folder.parent_folder_id
+      },
     },
   },
 
