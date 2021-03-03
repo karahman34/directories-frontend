@@ -8,7 +8,6 @@
       :loading="loading"
       :headers="headers"
       :items="directories"
-      :options.sync="options"
       hide-default-footer
       @dblclick:row="rowDoubleClickHandler"
       @contextmenu:row="contextMenuHandler"
@@ -168,19 +167,7 @@ export default {
         value: 'created_at',
       },
     ],
-    options: {},
   }),
-
-  watch: {
-    options: {
-      deep: true,
-      handler(event) {
-        const { sortBy, sortDesc } = event
-
-        this.sortHandler(sortBy, sortDesc)
-      },
-    },
-  },
 
   methods: {
     isFile(item) {
@@ -212,11 +199,6 @@ export default {
     },
     rowDoubleClickHandler(e, val) {
       this.$emit('dblClick:row', val.item)
-    },
-    sortHandler(sortBy, sortDesc) {
-      if (sortBy[0] === 'size') {
-        this.$emit('sort:size', sortDesc[0])
-      }
     },
     contextMenuHandler(e, val) {
       e.preventDefault()

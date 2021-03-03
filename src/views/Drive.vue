@@ -5,7 +5,6 @@
       :breadcrumb-items="breadcrumbItems"
       :loading="getDirectoriesLoading"
       :directories="currentDirectories"
-      @sort:size="sortBySize"
       @dblClick:row="rowClickHandler"
       @click:breadcrumbs="breadcrumbsClickHandler"
       @click:newFolder="showCreateFolderDialog = !showCreateFolderDialog"
@@ -251,30 +250,6 @@ export default {
       this.setCurrentDirectories()
 
       this.breadcrumbItems.splice(this.breadcrumbItems.indexOf(item) + 1)
-    },
-    sortBySize(desc) {
-      this.currentDirectories.sort((a, b) => {
-        const size1 = a.size
-        const size2 = b.size
-
-        if (!desc) {
-          if (size1 < size2) {
-            return -1
-          } else if (size1 > size2) {
-            return 1
-          } else {
-            return 0
-          }
-        } else {
-          if (size1 < size2) {
-            return 1
-          } else if (size1 > size2) {
-            return -1
-          } else {
-            return 0
-          }
-        }
-      })
     },
     folderCreatedHandler(folder) {
       folder.directories = null
