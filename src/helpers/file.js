@@ -1,7 +1,7 @@
 function isImage(file) {
   const pattern = /^image\/.+$/
 
-  return pattern.test(file.mime_type)
+  return isFile(file) && pattern.test(file.mime_type)
 }
 
 function isFile(file) {
