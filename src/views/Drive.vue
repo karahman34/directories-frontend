@@ -58,13 +58,13 @@
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex'
 import { isFile } from '@/helpers/file'
-import DirectoryTable from '@/components/Tables/DirectoryTable'
+import userApi from '@/api/userApi'
 import folderApi from '@/api/folderApi'
 import { setDirectoryObject, setSubFoldersObject } from '@/helpers/storage'
 import CreateFolderDialog from '@/components/Dialogs/CreateFolderDialog'
 import CreateFileDialog from '@/components/Dialogs/CreateFileDialog'
-import userApi from '@/api/userApi'
 import ContextMenu from '@/components/ContextMenu'
+import DirectoryTable from '@/components/Tables/DirectoryTable'
 import UpdateFolderDialog from '@/components/Dialogs/UpdateFolderDialog'
 
 export default {
@@ -72,10 +72,10 @@ export default {
 
   components: {
     DirectoryTable,
+    ContextMenu,
     CreateFolderDialog,
     CreateFileDialog,
     UpdateFolderDialog,
-    ContextMenu,
   },
 
   data() {
