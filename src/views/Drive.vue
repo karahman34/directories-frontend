@@ -21,6 +21,14 @@
       @created="folderCreatedHandler"
     ></create-folder-dialog>
 
+    <!-- The Update Folder Dialog -->
+    <update-folder-dialog
+      v-if="folderEdit !== null"
+      v-model="showFolderUpdateDialog"
+      :folder="folderEdit"
+      @updated="folderUpdatedHandler"
+    ></update-folder-dialog>
+
     <!-- The Create File Dialog -->
     <create-file-dialog
       v-if="activeDirectory"
@@ -37,6 +45,10 @@
       :item="contextMenu.item"
       @hide="hideContextMenu"
       @open:folder="rowClickHandler"
+      @edit:folder="
+        ;(folderEdit = $event),
+          (showFolderUpdateDialog = !showFolderUpdateDialog)
+      "
       @delete:file="fileOrFolderDeletedHandler"
       @delete:folder="fileOrFolderDeletedHandler"
     ></context-menu>
@@ -53,6 +65,7 @@ import CreateFolderDialog from '@/components/Dialogs/CreateFolderDialog'
 import CreateFileDialog from '@/components/Dialogs/CreateFileDialog'
 import userApi from '@/api/userApi'
 import ContextMenu from '@/components/ContextMenu'
+import UpdateFolderDialog from '@/components/Dialogs/UpdateFolderDialog'
 
 export default {
   name: 'DrivePage',
@@ -61,6 +74,7 @@ export default {
     DirectoryTable,
     CreateFolderDialog,
     CreateFileDialog,
+    UpdateFolderDialog,
     ContextMenu,
   },
 
@@ -79,6 +93,8 @@ export default {
         x: null,
         y: null,
       },
+      showFolderUpdateDialog: false,
+      folderEdit: null,
     }
   },
 
@@ -268,6 +284,24 @@ export default {
 
       this.currentDirectories.unshift(folder)
       this.syncLocalRoot()
+
+      if (this.searchActive) {
+        this.itemChange = true
+      }
+    },
+    folderUpdatedHandler(folder) {
+      folder.directories = null
+
+      delete folder.files
+      delete folder.sub_folders
+
+      const targetIndex = this.currentDirectories.findIndex(
+        fol => fol.id === folder.id,
+      )
+
+      if (targetIndex >= 0) {
+        this.currentDirectories.splice(targetIndex, 1, folder)
+      }
 
       if (this.searchActive) {
         this.itemChange = true

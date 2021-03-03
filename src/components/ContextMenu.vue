@@ -80,6 +80,12 @@ export default {
           method: () => this.previewHandler(),
         },
         {
+          icon: 'mdi-pencil',
+          text: 'Edit',
+          hidden: true,
+          method: () => this.$emit('edit:folder', this.item),
+        },
+        {
           icon: 'mdi-download',
           text: 'Download',
           hidden: true,
@@ -126,6 +132,7 @@ export default {
     },
     setAvailableMenus() {
       this.setOpen()
+      this.setEdit()
       this.setPreview()
       this.setDownload()
     },
@@ -138,6 +145,13 @@ export default {
       const preview = this.menus.find(menu => menu.text === 'Preview')
 
       preview.hidden = isImage(this.item) ? false : true
+    },
+    setEdit() {
+      if (!isFile(this.item) && !isImage(this.item)) {
+        const edit = this.menus.find(menu => menu.text === 'Edit')
+
+        edit.hidden = false
+      }
     },
     setDownload() {
       const download = this.menus.find(menu => menu.text === 'Download')
