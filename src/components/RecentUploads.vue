@@ -1,12 +1,8 @@
 <template>
   <div>
     <!-- Title -->
-    <div
-      class="mb-1 text-h5 blue-grey--text text--darken-3 d-flex align-center"
-    >
-      <v-icon class="blue-grey--text text--darken-3 text-h5 mr-2"
-        >mdi-upload</v-icon
-      >
+    <div class="mb-1 text-h5 d-flex align-center">
+      <v-icon class="text-h5 mr-2 inherit-color">mdi-upload</v-icon>
       <span>Recent Uploads</span>
     </div>
 

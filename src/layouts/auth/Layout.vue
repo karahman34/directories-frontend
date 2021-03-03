@@ -1,6 +1,6 @@
 <template>
   <v-app id="auth-layout">
-    <v-main id="main" class="primary">
+    <v-main id="main" class="blue-grey darken-4">
       <v-container>
         <!-- Router View -->
         <slot></slot>

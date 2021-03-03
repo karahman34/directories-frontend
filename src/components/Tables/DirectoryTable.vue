@@ -32,7 +32,7 @@
                   v-if="item && item.root === true"
                   class="d-flex align-center"
                 >
-                  <v-icon class="grey--text text--darken-1">mdi-cloud</v-icon>
+                  <v-icon>mdi-cloud</v-icon>
                   <span class="ml-2">{{ item.directory.name }}</span>
                 </div>
 
@@ -41,7 +41,7 @@
                   v-else-if="item && item.search === true"
                   class="d-flex align-center"
                 >
-                  <v-icon class="grey--text text--darken-1">mdi-magnify</v-icon>
+                  <v-icon>mdi-magnify</v-icon>
                   <span class="ml-2">{{ item.directory.name }}</span>
                 </div>
 
@@ -248,6 +248,11 @@ export default {
         display: flex;
         align-items: center;
 
+        .utilities-item,
+        .utilities-icon {
+          color: #455a64;
+        }
+
         .utilities-item {
           display: flex;
           align-items: center;
@@ -255,10 +260,7 @@ export default {
 
           &:hover {
             cursor: pointer;
-
-            .utilities-text {
-              color: rgba(0, 0, 0, 0.6);
-            }
+            color: rgba(69, 90, 100, 0.7);
           }
 
           &:not(:last-child) {

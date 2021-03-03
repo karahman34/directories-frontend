@@ -1,8 +1,8 @@
 <template>
-  <v-navigation-drawer v-model="show" app dark class="py-2 primary">
+  <v-navigation-drawer v-model="show" app dark class="py-2 blue-grey darken-4">
     <!-- Logo -->
     <v-app-bar-title class="d-flex justify-center py-2">
-      <logo color="white--text"></logo>
+      <logo class="white--text text-h5"></logo>
     </v-app-bar-title>
 
     <!-- List of menus -->

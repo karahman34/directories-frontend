@@ -3,7 +3,8 @@
     <v-btn
       v-if="!showSearch && (searchState === null || !searchState.length)"
       rounded
-      class="search-box-toggle primary elevation-0"
+      color="primary"
+      class="search-box-toggle elevation-0"
       @click="showSearch = true"
     >
       <v-icon>mdi-magnify</v-icon>
@@ -14,8 +15,8 @@
         v-if="showSearch"
         v-model="search"
         ref="searchBox"
-        dark
         solo
+        dark
         dense
         rounded
         clearable

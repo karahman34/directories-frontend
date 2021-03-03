@@ -23,12 +23,10 @@
 
         <!-- Route Name -->
         <div class="my-2 mt-lg-0 mb-lg-3 d-flex align-center">
-          <v-icon class="text-h5 mr-2 blue-grey--text text--darken-3">{{
+          <v-icon class="text-h5 mr-2 inherit-color">{{
             currentRoute.icon
           }}</v-icon>
-          <span class="text-h5 blue-grey--text text--darken-3">{{
-            currentRoute.text
-          }}</span>
+          <span class="text-h5">{{ currentRoute.text }}</span>
         </div>
 
         <!-- Router View -->

@@ -9,10 +9,11 @@
 
       <v-btn
         rounded
-        class="d-none d-lg-block px-2 primary elevation-1"
+        color="primary"
+        class="d-none d-lg-block px-2 elevation-1"
         v-on="on"
       >
-        <v-icon class="white--text">mdi-account</v-icon>
+        <v-icon>mdi-account</v-icon>
         <v-icon>mdi-chevron-down</v-icon>
       </v-btn>
     </template>

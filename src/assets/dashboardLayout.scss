@@ -1,2 +1,9 @@
 #dashboard-layout {
+  .v-icon.inherit-color {
+    color: inherit;
+  }
+
+  .v-icon.inherit-size {
+    font-size: inherit;
+  }
 }

@@ -6,7 +6,7 @@
 
     <v-card class="auth-card rounded-lg">
       <v-card-title class="text-center">
-        <logo size="h5"></logo>
+        <logo class="text-h5"></logo>
       </v-card-title>
 
       <v-card-text>
