@@ -60,6 +60,18 @@
 
     <!-- FAB Stock -->
     <fab-stock>
+      <!-- Copy Button -->
+      <copy-button
+        v-if="selectedItems.length"
+        @copy="setCopyMoveFromSelectedItems('copy')"
+      ></copy-button>
+
+      <!-- Move Button -->
+      <move-button
+        v-if="selectedItems.length"
+        @move="setCopyMoveFromSelectedItems('move')"
+      ></move-button>
+
       <!-- Cancel Copy Move Button -->
       <cancel-copy-move-button
         v-if="copyMove.value"
@@ -70,10 +82,11 @@
       <!-- Paste Button -->
       <paste-button
         v-if="copyMove.value"
-        :parent-folder-id="activeDirectory.id"
-        :item="copyMove.item"
+        :items="copyMove.items"
         :action="copyMove.action"
+        :parent-folder="activeDirectory"
         @success="successCopyMoveHandler"
+        @done="hideCopyMove"
       ></paste-button>
 
       <!-- The Batch Delete FAB -->
@@ -95,6 +108,8 @@ import folderApi from '@/api/folderApi'
 import { setDirectoryObject, setSubFoldersObject } from '@/helpers/storage'
 import FABStock from '@/components/FAB/FABStock'
 import BatchDeleteButton from '@/components/FAB/BatchDeleteButton'
+import CopyButton from '@/components/FAB/CopyButton'
+import MoveButton from '@/components/FAB/MoveButton'
 import CancelCopyMoveButton from '@/components/FAB/CancelCopyMoveButton'
 import CreateFolderDialog from '@/components/Dialogs/CreateFolderDialog'
 import CreateFileDialog from '@/components/Dialogs/CreateFileDialog'
@@ -110,6 +125,8 @@ export default {
     'fab-stock': FABStock,
     BatchDeleteButton,
     DirectoryTable,
+    CopyButton,
+    MoveButton,
     CancelCopyMoveButton,
     ContextMenu,
     CreateFolderDialog,
@@ -137,9 +154,9 @@ export default {
       showFolderUpdateDialog: false,
       folderEdit: null,
       copyMove: {
-        action: null,
         value: false,
-        item: null,
+        action: null,
+        items: [],
         fromDirectory: null,
       },
     }
@@ -159,13 +176,15 @@ export default {
     searchState: {
       immediate: true,
       handler() {
+        this.hideCopyMove()
+        this.selectedItems = []
+
         if (this.searchActive) {
           this.root = null
           this.activeDirectory = null
           this.currentDirectories = []
           this.breadcrumbItems = []
 
-          this.hideCopyMove()
           this.searchDirectories()
         } else if (this.rootState === null) {
           this.getRootDirectory()
@@ -178,14 +197,6 @@ export default {
       if (value && this.searchActive) {
         this.setRootMutation(null)
       }
-    },
-    copyMove: {
-      deep: true,
-      handler(dialog) {
-        if (!dialog.value) {
-          this.hideCopyMove()
-        }
-      },
     },
   },
 
@@ -281,9 +292,14 @@ export default {
       this.currentDirectories = this.activeDirectory.directories
     },
     rowClickHandler(directory) {
-      const { value, item } = this.copyMove
+      const { value, items } = this.copyMove
+      const inCopyMoveAction = items.map(item => item.id)
 
-      if (isFile(directory) || (value && item.id === directory.id)) return
+      if (
+        isFile(directory) ||
+        (value && inCopyMoveAction.includes(directory.id))
+      )
+        return
 
       this.activeDirectory = directory
 
@@ -391,16 +407,20 @@ export default {
       this.setRecentUploads(null)
       this.setCurrentDirectories()
     },
-    setCopyMove(action, item) {
-      this.copyMove.action = action
+    setCopyMoveFromSelectedItems(action) {
+      this.setCopyMove(action, ...this.selectedItems)
+      this.selectedItems = []
+    },
+    setCopyMove(action, ...items) {
       this.copyMove.value = true
-      this.copyMove.item = item
+      this.copyMove.action = action
+      this.copyMove.items = items
       this.copyMove.fromDirectory = this.activeDirectory
     },
     hideCopyMove() {
-      this.copyMove.action = null
       this.copyMove.value = false
-      this.copyMove.item = null
+      this.copyMove.action = null
+      this.copyMove.items = []
       this.copyMove.fromDirectory = null
     },
     successCopyMoveHandler(item) {
@@ -417,13 +437,12 @@ export default {
       } else {
         this.folderCreatedHandler(item)
       }
-
-      this.hideCopyMove()
     },
     rowItemClasses(rowItem) {
       let classes = ''
-      const { item, value } = this.copyMove
-      if (value && item.id === rowItem.id) {
+      const { value, items } = this.copyMove
+      const inCopyMoveAction = items.map(item => item.id)
+      if (value && inCopyMoveAction.includes(rowItem.id)) {
         classes += 'grey--text text--lighten-1 cursor-not-allowed'
       }
 

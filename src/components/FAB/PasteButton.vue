@@ -4,12 +4,12 @@
       <v-btn
         fab
         dark
-        color="blue darken-2"
+        color="primary"
         v-bind="attrs"
         v-on="on"
         @click="buttonClickHandler"
       >
-        <v-icon>{{ icon }}</v-icon>
+        <v-icon>mdi-content-paste</v-icon>
       </v-btn>
     </template>
 
@@ -28,25 +28,25 @@ export default {
       type: String,
       required: true,
     },
-    item: {
-      type: Object,
+    items: {
+      type: Array,
       required: true,
     },
-    parentFolderId: {
-      type: String,
+    parentFolder: {
+      type: Object,
       required: true,
     },
   },
 
+  data() {
+    return {
+      focusItem: null,
+    }
+  },
+
   computed: {
-    isCopy() {
-      return this.action.toLowerCase() === 'copy'
-    },
-    isFolder() {
-      return !isFile(this.item)
-    },
-    icon() {
-      return this.isCopy ? 'mdi-content-copy' : 'mdi-file-move'
+    parentFolderId() {
+      return this.parentFolder.id
     },
   },
 
@@ -54,22 +54,36 @@ export default {
     emitSuccessEvent(item) {
       this.$emit('success', item)
     },
-    buttonClickHandler() {
-      let text = this.isCopy ? 'Copying' : 'Moving'
-      text += this.isFolder ? ' folder' : ' file'
-      text += '...'
+    async buttonClickHandler() {
+      this.focusItem = this.items.shift()
+
+      const isFolder = !isFile(this.focusItem)
+      const isCopy = this.action.toLowerCase() === 'copy'
+
+      let text = isCopy ? 'Copying' : 'Moving'
+      text += ` ${this.focusItem.name} to ${this.parentFolder.name}...`
 
       this.$overlay.show(text)
 
-      if (this.isFolder) {
-        return this.isCopy ? this.copyFolder() : this.moveFolder()
+      if (!isFolder && isCopy) {
+        await this.copyFile()
+      } else if (!isFolder && !isCopy) {
+        await this.moveFile()
+      } else if (isFolder && isCopy) {
+        await this.copyFolder()
       } else {
-        return this.isCopy ? this.copyFile() : this.moveFile()
+        await this.moveFolder()
+      }
+
+      if (this.items.length) {
+        this.buttonClickHandler()
+      } else {
+        this.$emit('done')
       }
     },
     async copyFile() {
       try {
-        const { data } = await fileApi.copy(this.item.id, {
+        const { data } = await fileApi.copy(this.focusItem.id, {
           folder_id: this.parentFolderId,
         })
 
@@ -89,7 +103,7 @@ export default {
     },
     async moveFile() {
       try {
-        const { data } = await fileApi.move(this.item.id, {
+        const { data } = await fileApi.move(this.focusItem.id, {
           folder_id: this.parentFolderId,
         })
 
@@ -109,7 +123,7 @@ export default {
     },
     async copyFolder() {
       try {
-        const { data } = await folderApi.copy(this.item.id, {
+        const { data } = await folderApi.copy(this.focusItem.id, {
           parent_folder_id: this.parentFolderId,
         })
 
@@ -129,7 +143,7 @@ export default {
     },
     async moveFolder() {
       try {
-        const { data } = await folderApi.move(this.item.id, {
+        const { data } = await folderApi.move(this.focusItem.id, {
           parent_folder_id: this.parentFolderId,
         })
 

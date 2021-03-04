@@ -158,6 +158,10 @@ export default {
       type: Function,
       default: undefined,
     },
+    value: {
+      type: Array,
+      required: true,
+    },
   },
 
   data: () => ({
@@ -185,6 +189,9 @@ export default {
   watch: {
     selected(selected) {
       return this.$emit('input', selected)
+    },
+    value(value) {
+      this.selected = value
     },
   },
 

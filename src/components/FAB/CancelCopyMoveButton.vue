@@ -3,8 +3,7 @@
     <template v-slot:activator="{ on, attrs }">
       <v-btn
         fab
-        dark
-        color="blue darken-2"
+        color="grey lighten-2"
         v-bind="attrs"
         v-on="on"
         @click="$emit('cancel')"
