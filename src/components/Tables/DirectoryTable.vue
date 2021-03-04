@@ -5,6 +5,8 @@
       class="directory-table"
       dense
       disable-pagination
+      fixed-header
+      height="80vh"
       :loading="loading"
       :headers="headers"
       :items="directories"
