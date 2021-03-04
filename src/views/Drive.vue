@@ -54,8 +54,7 @@
         ;(folderEdit = $event),
           (showFolderUpdateDialog = !showFolderUpdateDialog)
       "
-      @delete:file="fileOrFolderDeletedHandler"
-      @delete:folder="fileOrFolderDeletedHandler"
+      @destroy="fileOrFolderDeletedHandler"
     ></context-menu>
 
     <!-- FAB Stock -->

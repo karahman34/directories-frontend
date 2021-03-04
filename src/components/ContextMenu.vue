@@ -1,5 +1,10 @@
 <template>
-  <v-menu v-model="show" :position-x="positionX" :position-y="positionY">
+  <v-menu
+    v-model="show"
+    :position-x="positionX"
+    :position-y="positionY"
+    :close-on-content-click="false"
+  >
     <v-list dense>
       <v-list-item
         v-for="menu in availableMenus"
@@ -73,17 +78,26 @@ export default {
         {
           icon: 'mdi-pencil',
           text: 'Edit',
-          method: () => this.$emit('edit:folder', this.item),
+          method: () => {
+            this.$emit('edit:folder', this.item)
+            this.emitHideEvent()
+          },
         },
         {
           icon: 'mdi-content-copy',
           text: 'Copy',
-          method: () => this.$emit('copy', this.item),
+          method: () => {
+            this.$emit('copy', this.item)
+            this.emitHideEvent()
+          },
         },
         {
           icon: 'mdi-file-move',
           text: 'Move',
-          method: () => this.$emit('move', this.item),
+          method: () => {
+            this.$emit('move', this.item)
+            this.emitHideEvent()
+          },
         },
         {
           icon: 'mdi-download',
@@ -93,7 +107,7 @@ export default {
         {
           icon: 'mdi-trash-can',
           text: 'Delete',
-          method: menu => this.deleteHandler(menu),
+          method: () => this.deleteHandler(),
         },
       ],
     }
@@ -181,8 +195,8 @@ export default {
     downloadHandler() {
       window.open(this.item.path)
     },
-    deleteHandler(menu) {
-      return isFile(this.item) ? this.deleteFile(menu) : this.deleteFolder(menu)
+    deleteHandler() {
+      return isFile(this.item) ? this.deleteFile() : this.deleteFolder()
     },
     async deleteFile() {
       this.$overlay.show('Deleting file...')
@@ -195,7 +209,7 @@ export default {
         })
 
         this.removeRecentUpload(this.item)
-        this.$emit('delete:file', this.item)
+        this.$emit('destroy', this.item)
         this.emitHideEvent()
       } catch (err) {
         this.$snackbar.show({
@@ -216,7 +230,7 @@ export default {
           text: `${this.item.name} was successfully deleted.`,
         })
 
-        this.$emit('delete:folder', this.item)
+        this.$emit('destroy', this.item)
         this.emitHideEvent()
       } catch (err) {
         this.$snackbar.show({
