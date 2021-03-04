@@ -5,7 +5,6 @@
         fab
         dark
         color="error"
-        :loading="loading"
         v-bind="attrs"
         v-on="on"
         @click="runBatchDelete"
@@ -33,15 +32,9 @@ export default {
     },
   },
 
-  data() {
-    return {
-      loading: false,
-    }
-  },
-
   methods: {
     async runBatchDelete() {
-      this.loading = true
+      this.$overlay.show(`Deleting ${this.items.length} items...`)
 
       try {
         await userApi.batchDelete({
@@ -61,7 +54,7 @@ export default {
           text: err?.response?.data?.message || 'Failed to run batch delete.',
         })
       } finally {
-        this.loading = false
+        this.$overlay.hide()
       }
     },
   },
