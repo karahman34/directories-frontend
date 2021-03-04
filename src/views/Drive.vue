@@ -388,6 +388,11 @@ export default {
         1,
       )
 
+      this.selectedItems.splice(
+        this.selectedItems.findIndex(x => x.id === item.id),
+        1,
+      )
+
       this.syncLocalRoot()
 
       if (this.searchActive) {
@@ -404,6 +409,7 @@ export default {
       this.selectedItems = []
 
       this.syncLocalRoot()
+      this.hideCopyMove()
       this.setRecentUploads(null)
       this.setCurrentDirectories()
     },
