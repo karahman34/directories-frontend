@@ -1,5 +1,5 @@
 <template>
-  <v-overlay :value="overlay.show" class="text-center">
+  <v-overlay :value="overlay.show" class="text-center" z-index="40">
     <v-progress-circular
       indeterminate
       :size="64"
