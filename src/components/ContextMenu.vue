@@ -196,11 +196,11 @@ export default {
       window.open(this.item.path)
     },
     deleteHandler() {
+      this.$overlay.show(`Deleting ${this.item.name}...`)
+
       return isFile(this.item) ? this.deleteFile() : this.deleteFolder()
     },
     async deleteFile() {
-      this.$overlay.show('Deleting file...')
-
       try {
         await fileApi.delete(this.item.id)
 
@@ -221,8 +221,6 @@ export default {
       }
     },
     async deleteFolder() {
-      this.$overlay.show('Deleting folder...')
-
       try {
         await folderApi.delete(this.item.id)
 
