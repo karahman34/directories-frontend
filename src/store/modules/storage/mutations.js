@@ -9,8 +9,6 @@ export default {
     state.recentUploads = files
   },
   ADD_RECENT_UPLOAD(state, file) {
-    state.usedSpace += file.size
-
     if (Array.isArray(state.recentUploads)) {
       state.recentUploads.unshift(file)
     }
@@ -25,6 +23,9 @@ export default {
         state.recentUploads.splice(targetIndex, 1)
       }
     }
+  },
+  INCREASE_USED_SPACE(state, size) {
+    state.usedSpace += size
   },
   DECREASE_USED_SPACE(state, size) {
     state.usedSpace -= size

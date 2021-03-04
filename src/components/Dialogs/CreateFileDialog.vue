@@ -88,6 +88,7 @@ export default {
 
   methods: {
     ...mapMutations('storage', {
+      increaseUsedSpace: 'INCREASE_USED_SPACE',
       addRecentUpload: 'ADD_RECENT_UPLOAD',
     }),
     async createFile() {
@@ -106,6 +107,7 @@ export default {
         this.$emit('created', data)
 
         this.dialog = false
+        this.increaseUsedSpace(data.size)
         this.addRecentUpload(data)
 
         this.$snackbar.show({
