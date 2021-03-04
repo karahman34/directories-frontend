@@ -399,9 +399,7 @@ export default {
         this.itemChange = true
       }
     },
-    batchItemsDeletedHandler(items) {
-      const deletedIds = items.map(item => item.id)
-
+    batchItemsDeletedHandler(deletedIds) {
       this.activeDirectory.directories = this.currentDirectories.filter(
         dir => !deletedIds.includes(dir.id),
       )

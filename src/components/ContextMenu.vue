@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import { fullFileName, isFile, isImage } from '@/helpers/file'
 import fileApi from '@/api/fileApi'
 import folderApi from '@/api/folderApi'
@@ -56,6 +56,10 @@ export default {
       default: false,
     },
     allowMove: {
+      type: Boolean,
+      default: false,
+    },
+    forceDelete: {
       type: Boolean,
       default: false,
     },
@@ -114,6 +118,9 @@ export default {
   },
 
   computed: {
+    ...mapState('auth', {
+      userState: state => state.user,
+    }),
     isImage() {
       return isImage(this.item)
     },
@@ -156,6 +163,7 @@ export default {
 
   methods: {
     ...mapMutations('storage', {
+      decreaseUsedSpace: 'DECREASE_USED_SPACE',
       removeRecentUpload: 'REMOVE_RECENT_UPLOAD',
     }),
     emitHideEvent() {
@@ -196,9 +204,20 @@ export default {
       window.open(this.item.path)
     },
     deleteHandler() {
-      this.$overlay.show(`Deleting ${this.item.name}...`)
+      const msgName = isFile(this.item)
+        ? fullFileName(this.item)
+        : this.item.name
+      this.$overlay.show(`Deleting ${msgName}...`)
 
-      return isFile(this.item) ? this.deleteFile() : this.deleteFolder()
+      const isFolder = !isFile(this.item)
+      const userSettings = this.userState.settings
+      const trashEnable = userSettings.trash === 'enable'
+
+      if (!this.forceDelete && trashEnable) {
+        return isFolder ? this.softDeleteFolder() : this.softDeleteFile()
+      } else {
+        return isFolder ? this.deleteFolder() : this.deleteFile()
+      }
     },
     async deleteFile() {
       try {
@@ -208,6 +227,7 @@ export default {
           text: `${fullFileName(this.item)} was successfully deleted.`,
         })
 
+        this.decreaseUsedSpace(this.item.size)
         this.removeRecentUpload(this.item)
         this.$emit('destroy', this.item)
         this.emitHideEvent()
@@ -234,6 +254,50 @@ export default {
         this.$snackbar.show({
           color: 'red',
           text: err?.response?.data?.message || 'Failed to delete folder.',
+        })
+      } finally {
+        this.$overlay.hide()
+      }
+    },
+    async softDeleteFile() {
+      try {
+        await fileApi.softDelete(this.item.id)
+
+        this.$snackbar.show({
+          text: `${fullFileName(
+            this.item,
+          )} was successfully moved to trash bin.`,
+        })
+
+        this.$emit('destroy', this.item)
+        this.removeRecentUpload(this.item)
+        this.emitHideEvent()
+      } catch (err) {
+        this.$snackbar.show({
+          color: 'red',
+          text:
+            err?.response?.data?.message || 'Failed to move file to trash bin.',
+        })
+      } finally {
+        this.$overlay.hide()
+      }
+    },
+    async softDeleteFolder() {
+      try {
+        await folderApi.softDelete(this.item.id)
+
+        this.$snackbar.show({
+          text: `${this.item.name} was successfully moved to trash bin.`,
+        })
+
+        this.$emit('destroy', this.item)
+        this.emitHideEvent()
+      } catch (err) {
+        this.$snackbar.show({
+          color: 'red',
+          text:
+            err?.response?.data?.message ||
+            'Failed to move folder to trash bin.',
         })
       } finally {
         this.$overlay.hide()

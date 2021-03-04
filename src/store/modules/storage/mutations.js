@@ -16,8 +16,6 @@ export default {
     }
   },
   REMOVE_RECENT_UPLOAD(state, file) {
-    state.usedSpace -= file.size
-
     if (Array.isArray(state.recentUploads)) {
       const targetIndex = state.recentUploads.findIndex(
         _file => _file.id === file.id,
@@ -27,6 +25,9 @@ export default {
         state.recentUploads.splice(targetIndex, 1)
       }
     }
+  },
+  DECREASE_USED_SPACE(state, size) {
+    state.usedSpace -= size
   },
   SET_ROOT(state, root) {
     state.root = root
