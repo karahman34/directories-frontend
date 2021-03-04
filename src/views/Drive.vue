@@ -67,14 +67,14 @@
         @cancel="hideCopyMove"
       ></cancel-copy-move-button>
 
-      <!-- Copy Move Button -->
-      <copy-move-button
+      <!-- Paste Button -->
+      <paste-button
         v-if="copyMove.value"
         :parent-folder-id="activeDirectory.id"
         :item="copyMove.item"
         :action="copyMove.action"
         @success="successCopyMoveHandler"
-      ></copy-move-button>
+      ></paste-button>
 
       <!-- The Batch Delete FAB -->
       <batch-delete-button
@@ -95,13 +95,13 @@ import folderApi from '@/api/folderApi'
 import { setDirectoryObject, setSubFoldersObject } from '@/helpers/storage'
 import FABStock from '@/components/FAB/FABStock'
 import BatchDeleteButton from '@/components/FAB/BatchDeleteButton'
-import CopyMoveButton from '@/components/FAB/CopyMoveButton'
 import CancelCopyMoveButton from '@/components/FAB/CancelCopyMoveButton'
 import CreateFolderDialog from '@/components/Dialogs/CreateFolderDialog'
 import CreateFileDialog from '@/components/Dialogs/CreateFileDialog'
 import ContextMenu from '@/components/ContextMenu'
 import DirectoryTable from '@/components/Tables/DirectoryTable'
 import UpdateFolderDialog from '@/components/Dialogs/UpdateFolderDialog'
+import PasteButton from '@/components/FAB/PasteButton'
 
 export default {
   name: 'DrivePage',
@@ -110,12 +110,12 @@ export default {
     'fab-stock': FABStock,
     BatchDeleteButton,
     DirectoryTable,
-    CopyMoveButton,
     CancelCopyMoveButton,
     ContextMenu,
     CreateFolderDialog,
     CreateFileDialog,
     UpdateFolderDialog,
+    PasteButton,
   },
 
   data() {
