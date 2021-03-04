@@ -24,4 +24,10 @@ export default {
   move(folderId, payload) {
     return http.post(`${prefix}/${folderId}/move`, payload)
   },
+  softDelete(folderId) {
+    return http.delete(`${prefix}/${folderId}/soft`)
+  },
+  restore(folderId) {
+    return http.patch(`${prefix}/${folderId}/restore`)
+  },
 }

@@ -15,4 +15,10 @@ export default {
   delete(fileId) {
     return http.delete(`${prefix}/${fileId}`)
   },
+  softDelete(fileId) {
+    return http.delete(`${prefix}/${fileId}/soft`)
+  },
+  restore(fileId) {
+    return http.patch(`${prefix}/${fileId}/restore`)
+  },
 }

@@ -15,4 +15,7 @@ export default {
   batchDelete(payload) {
     return http.post(`${prefix}/storage/batch-delete`, payload)
   },
+  softBatchDelete(payload) {
+    return http.post(`${prefix}/storage/soft-batch-delete`, payload)
+  },
 }
