@@ -64,12 +64,13 @@
       :position-y="contextMenu.y"
       :item="contextMenu.item"
       @hide="hideContextMenu"
+      @destroy="fileDeletedHandler"
     ></context-menu>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 import { fullFileName, getIconFile, isImage } from '@/helpers/file'
 import ContextMenu from '@/components/ContextMenu'
 
@@ -126,6 +127,9 @@ export default {
   },
 
   methods: {
+    ...mapMutations('storage', {
+      setRoot: 'SET_ROOT',
+    }),
     ...mapActions('storage', {
       recentUploadsAction: 'getRecentUploads',
     }),
@@ -180,6 +184,9 @@ export default {
       this.contextMenu.item = file
       this.contextMenu.x = e.pageX
       this.contextMenu.y = e.pageY
+    },
+    fileDeletedHandler() {
+      this.setRoot(null)
     },
   },
 
