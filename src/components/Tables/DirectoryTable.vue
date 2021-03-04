@@ -10,6 +10,7 @@
       :loading="loading"
       :headers="headers"
       :items="directories"
+      :item-class="itemClass"
       :show-select="showSelect"
       hide-default-footer
       @dblclick:row="rowDoubleClickHandler"
@@ -152,6 +153,10 @@ export default {
     showSelect: {
       type: Boolean,
       required: true,
+    },
+    itemClass: {
+      type: Function,
+      default: undefined,
     },
   },
 

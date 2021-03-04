@@ -7,6 +7,7 @@
       :loading="getDirectoriesLoading"
       :directories="currentDirectories"
       :show-select="!searchActive"
+      :item-class="rowItemClasses"
       @dblClick:row="rowClickHandler"
       @click:breadcrumbs="breadcrumbsClickHandler"
       @click:newFolder="showCreateFolderDialog = !showCreateFolderDialog"
@@ -41,8 +42,8 @@
     <!-- The Context Menu -->
     <context-menu
       v-if="contextMenu.item !== null"
-      allow-copy
-      allow-move
+      :allow-copy="!searchActive"
+      :allow-move="!searchActive"
       :position-x="contextMenu.x"
       :position-y="contextMenu.y"
       :item="contextMenu.item"
@@ -164,6 +165,7 @@ export default {
           this.currentDirectories = []
           this.breadcrumbItems = []
 
+          this.hideCopyMove()
           this.searchDirectories()
         } else if (this.rootState === null) {
           this.getRootDirectory()
@@ -279,7 +281,9 @@ export default {
       this.currentDirectories = this.activeDirectory.directories
     },
     rowClickHandler(directory) {
-      if (isFile(directory)) return
+      const { value, item } = this.copyMove
+
+      if (isFile(directory) || (value && item.id === directory.id)) return
 
       this.activeDirectory = directory
 
@@ -415,6 +419,15 @@ export default {
       }
 
       this.hideCopyMove()
+    },
+    rowItemClasses(rowItem) {
+      let classes = ''
+      const { item, value } = this.copyMove
+      if (value && item.id === rowItem.id) {
+        classes += 'grey--text text--lighten-1 cursor-not-allowed'
+      }
+
+      return classes
     },
   },
 }
