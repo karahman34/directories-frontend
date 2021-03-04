@@ -41,10 +41,14 @@
     <!-- The Context Menu -->
     <context-menu
       v-if="contextMenu.item !== null"
+      allow-copy
+      allow-move
       :position-x="contextMenu.x"
       :position-y="contextMenu.y"
       :item="contextMenu.item"
       @hide="hideContextMenu"
+      @copy="setCopyMove('copy', $event)"
+      @move="setCopyMove('move', $event)"
       @open:folder="rowClickHandler"
       @edit:folder="
         ;(folderEdit = $event),
@@ -56,6 +60,22 @@
 
     <!-- FAB Stock -->
     <fab-stock>
+      <!-- Cancel Copy Move Button -->
+      <cancel-copy-move-button
+        v-if="copyMove.value"
+        :action="copyMove.action"
+        @cancel="hideCopyMove"
+      ></cancel-copy-move-button>
+
+      <!-- Copy Move Button -->
+      <copy-move-button
+        v-if="copyMove.value"
+        :parent-folder-id="activeDirectory.id"
+        :item="copyMove.item"
+        :action="copyMove.action"
+        @success="successCopyMoveHandler"
+      ></copy-move-button>
+
       <!-- The Batch Delete FAB -->
       <batch-delete-button
         v-if="!searchActive && selectedItems.length"
@@ -75,6 +95,8 @@ import folderApi from '@/api/folderApi'
 import { setDirectoryObject, setSubFoldersObject } from '@/helpers/storage'
 import FABStock from '@/components/FAB/FABStock'
 import BatchDeleteButton from '@/components/FAB/BatchDeleteButton'
+import CopyMoveButton from '@/components/FAB/CopyMoveButton'
+import CancelCopyMoveButton from '@/components/FAB/CancelCopyMoveButton'
 import CreateFolderDialog from '@/components/Dialogs/CreateFolderDialog'
 import CreateFileDialog from '@/components/Dialogs/CreateFileDialog'
 import ContextMenu from '@/components/ContextMenu'
@@ -88,6 +110,8 @@ export default {
     'fab-stock': FABStock,
     BatchDeleteButton,
     DirectoryTable,
+    CopyMoveButton,
+    CancelCopyMoveButton,
     ContextMenu,
     CreateFolderDialog,
     CreateFileDialog,
@@ -112,6 +136,12 @@ export default {
       },
       showFolderUpdateDialog: false,
       folderEdit: null,
+      copyMove: {
+        action: null,
+        value: false,
+        item: null,
+        fromDirectory: null,
+      },
     }
   },
 
@@ -147,6 +177,14 @@ export default {
       if (value && this.searchActive) {
         this.setRootMutation(null)
       }
+    },
+    copyMove: {
+      deep: true,
+      handler(dialog) {
+        if (!dialog.value) {
+          this.hideCopyMove()
+        }
+      },
     },
   },
 
@@ -349,6 +387,35 @@ export default {
       this.syncLocalRoot()
       this.setRecentUploads(null)
       this.setCurrentDirectories()
+    },
+    setCopyMove(action, item) {
+      this.copyMove.action = action
+      this.copyMove.value = true
+      this.copyMove.item = item
+      this.copyMove.fromDirectory = this.activeDirectory
+    },
+    hideCopyMove() {
+      this.copyMove.action = null
+      this.copyMove.value = false
+      this.copyMove.item = null
+      this.copyMove.fromDirectory = null
+    },
+    successCopyMoveHandler(item) {
+      const { action, fromDirectory } = this.copyMove
+      if (action.toLowerCase() === 'move') {
+        fromDirectory.directories.splice(
+          fromDirectory.directories.findIndex(dir => dir.id === item.id),
+          1,
+        )
+      }
+
+      if (isFile(item)) {
+        this.fileCreatedHandler(item)
+      } else {
+        this.folderCreatedHandler(item)
+      }
+
+      this.hideCopyMove()
     },
   },
 }

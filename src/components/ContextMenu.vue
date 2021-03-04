@@ -1,10 +1,5 @@
 <template>
-  <v-menu
-    v-model="show"
-    :position-x="positionX"
-    :position-y="positionY"
-    :close-on-content-click="false"
-  >
+  <v-menu v-model="show" :position-x="positionX" :position-y="positionY">
     <v-list dense>
       <v-list-item
         v-for="menu in availableMenus"
@@ -13,25 +8,15 @@
         :disabled="menu && menu.loading"
         @click="menu.method(menu)"
       >
-        <!-- Normal Icon -->
+        <!-- Icon -->
         <v-list-item-icon class="mr-1">
-          <!-- Loading Spinner -->
-          <v-progress-circular
-            v-if="menu.loading"
-            indeterminate
-            width="2"
-            size="17"
-            color="grey darken-2"
-          ></v-progress-circular>
-
-          <!-- Normal Icon -->
-          <v-icon v-else class="text-h6 grey--text text--darken-2">{{
+          <v-icon class="text-h6 grey--text text--darken-2">{{
             menu.icon
           }}</v-icon>
         </v-list-item-icon>
 
+        <!-- Text -->
         <v-list-item-title class="d-flex align-center">
-          <!-- Text -->
           <span class="text-body-2 grey--text text--darken-2">{{
             menu.text
           }}</span>
@@ -61,6 +46,14 @@ export default {
       type: Number,
       required: true,
     },
+    allowCopy: {
+      type: Boolean,
+      default: false,
+    },
+    allowMove: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data() {
@@ -83,6 +76,16 @@ export default {
           method: () => this.$emit('edit:folder', this.item),
         },
         {
+          icon: 'mdi-content-copy',
+          text: 'Copy',
+          method: () => this.$emit('copy', this.item),
+        },
+        {
+          icon: 'mdi-file-move',
+          text: 'Move',
+          method: () => this.$emit('move', this.item),
+        },
+        {
           icon: 'mdi-download',
           text: 'Download',
           method: () => this.downloadHandler(),
@@ -90,7 +93,6 @@ export default {
         {
           icon: 'mdi-trash-can',
           text: 'Delete',
-          loading: false,
           method: menu => this.deleteHandler(menu),
         },
       ],
@@ -115,6 +117,10 @@ export default {
           return this.setOpen()
         } else if (name === 'edit') {
           return this.setEdit()
+        } else if (name === 'copy') {
+          return this.setCopy()
+        } else if (name === 'move') {
+          return this.setMove()
         } else if (name === 'preview') {
           return this.setPreview()
         } else if (name === 'download') {
@@ -156,6 +162,12 @@ export default {
     setEdit() {
       return this.isFolder
     },
+    setCopy() {
+      return (this.isFolder || this.isFile) && this.allowCopy
+    },
+    setMove() {
+      return (this.isFolder || this.isFile) && this.allowMove
+    },
     setDownload() {
       return this.isFile
     },
@@ -170,11 +182,11 @@ export default {
       window.open(this.item.path)
     },
     deleteHandler(menu) {
-      menu.loading = true
-
       return isFile(this.item) ? this.deleteFile(menu) : this.deleteFolder(menu)
     },
-    async deleteFile(menu) {
+    async deleteFile() {
+      this.$overlay.show('Deleting file...')
+
       try {
         await fileApi.delete(this.item.id)
 
@@ -182,19 +194,21 @@ export default {
           text: `${fullFileName(this.item)} was successfully deleted.`,
         })
 
-        this.emitHideEvent()
         this.removeRecentUpload(this.item)
         this.$emit('delete:file', this.item)
+        this.emitHideEvent()
       } catch (err) {
         this.$snackbar.show({
           color: 'red',
           text: err?.response?.data?.message || 'Failed to delete file.',
         })
       } finally {
-        menu.loading = false
+        this.$overlay.hide()
       }
     },
-    async deleteFolder(menu) {
+    async deleteFolder() {
+      this.$overlay.show('Deleting folder...')
+
       try {
         await folderApi.delete(this.item.id)
 
@@ -202,15 +216,15 @@ export default {
           text: `${this.item.name} was successfully deleted.`,
         })
 
-        this.emitHideEvent()
         this.$emit('delete:folder', this.item)
+        this.emitHideEvent()
       } catch (err) {
         this.$snackbar.show({
           color: 'red',
           text: err?.response?.data?.message || 'Failed to delete folder.',
         })
       } finally {
-        menu.loading = false
+        this.$overlay.hide()
       }
     },
   },

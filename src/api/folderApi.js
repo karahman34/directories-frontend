@@ -18,4 +18,10 @@ export default {
   delete(folderId) {
     return http.delete(`${prefix}/${folderId}`)
   },
+  copy(folderId, payload) {
+    return http.post(`${prefix}/${folderId}/copy`, payload)
+  },
+  move(folderId, payload) {
+    return http.post(`${prefix}/${folderId}/move`, payload)
+  },
 }
