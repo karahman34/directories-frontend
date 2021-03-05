@@ -1,4 +1,5 @@
 import authApi from '@/api/authApi'
+import userApi from '@/api/userApi'
 import { removeToken, setToken } from '@/plugins/http'
 
 export default {
@@ -49,6 +50,18 @@ export default {
 
       // Commits.
       commit('SET_USER', data)
+
+      return Promise.resolve(res)
+    } catch (err) {
+      return Promise.reject(err)
+    }
+  },
+  async updateUserSettings({ commit }, payload) {
+    try {
+      const res = await userApi.updateSettings(payload)
+      const { data } = res.data
+
+      commit('SET_USER_SETTINGS', data)
 
       return Promise.resolve(res)
     } catch (err) {

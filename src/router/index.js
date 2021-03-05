@@ -48,6 +48,15 @@ const routes = [
     },
     component: () => import('@/views/Trash.vue'),
   },
+  {
+    path: '/settings',
+    name: 'Settings',
+    meta: {
+      layout: 'dashboard',
+      middleware: 'auth',
+    },
+    component: () => import('@/views/Settings.vue'),
+  },
 ]
 
 const router = new VueRouter({

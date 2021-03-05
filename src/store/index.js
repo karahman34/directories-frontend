@@ -23,6 +23,11 @@ export default new Vuex.Store({
         icon: 'mdi-trash-can',
         to: { name: 'Trash' },
       },
+      {
+        text: 'Settings',
+        icon: 'mdi-cog',
+        to: { name: 'Settings' },
+      },
     ],
     snackbar: {
       text: null,

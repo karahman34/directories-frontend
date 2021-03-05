@@ -8,4 +8,7 @@ export default {
   SET_TOKEN(state, token) {
     state.token = token
   },
+  SET_USER_SETTINGS(state, settings) {
+    state.user.settings = settings
+  },
 }
