@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app dark flat color="primary">
+  <v-app-bar app dark flat color="blue-grey darken-4">
     <!-- Nav Hamburber -->
     <v-app-bar-nav-icon @click="$emit('toggle-sidebar')"></v-app-bar-nav-icon>
 
