@@ -26,7 +26,7 @@
             :class="{ 'mt-1': errorsField.name !== null }"
             :loading="loading"
             color="primary"
-            >Create</v-btn
+            >Upload</v-btn
           >
         </v-form>
       </v-card-text>
