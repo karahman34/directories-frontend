@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex'
+import { mapGetters, mapMutations, mapState } from 'vuex'
 import userApi from '@/api/userApi'
 
 export default {
@@ -37,14 +37,14 @@ export default {
     ...mapState('auth', {
       userState: state => state.user,
     }),
+    ...mapGetters('auth', {
+      trashEnabled: 'trashEnabled',
+    }),
     itemsLength() {
       return this.items.length
     },
     listIds() {
       return this.items.map(item => item.id)
-    },
-    trashEnabled() {
-      return this.userState.settings.trash === 'enable'
     },
   },
 

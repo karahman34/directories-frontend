@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapGetters } from 'vuex'
 import { fullFileName, isFile, isImage } from '@/helpers/file'
 import fileApi from '@/api/fileApi'
 import folderApi from '@/api/folderApi'
@@ -120,6 +120,9 @@ export default {
   computed: {
     ...mapState('auth', {
       userState: state => state.user,
+    }),
+    ...mapGetters('auth', {
+      trashEnabled: 'trashEnabled',
     }),
     isImage() {
       return isImage(this.item)
@@ -210,10 +213,8 @@ export default {
       this.$overlay.show(`Deleting ${msgName}...`)
 
       const isFolder = !isFile(this.item)
-      const userSettings = this.userState.settings
-      const trashEnable = userSettings.trash === 'enable'
 
-      if (!this.forceDelete && trashEnable) {
+      if (!this.forceDelete && this.trashEnabled) {
         return isFolder ? this.softDeleteFolder() : this.softDeleteFile()
       } else {
         return isFolder ? this.deleteFolder() : this.deleteFile()
