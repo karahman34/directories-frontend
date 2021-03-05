@@ -7,6 +7,7 @@
       disable-pagination
       fixed-header
       height="80vh"
+      :search="search"
       :loading="loading"
       :headers="headers"
       :items="directories"
@@ -48,6 +49,15 @@
                   <span class="ml-2">{{ item.directory.name }}</span>
                 </div>
 
+                <!-- Trash -->
+                <div
+                  v-else-if="item && item.trash === true"
+                  class="d-flex align-center"
+                >
+                  <v-icon>mdi-trash-can</v-icon>
+                  <span class="ml-2">{{ item.directory.name }}</span>
+                </div>
+
                 <!-- Normal -->
                 <template v-else>
                   {{ item.directory.name }}
@@ -56,8 +66,21 @@
             </template>
           </v-breadcrumbs>
 
+          <!-- Search -->
+          <template v-if="showSearch">
+            <v-text-field
+              v-model="search"
+              clearable
+              single-line
+              hide-details
+              class="search-box mt-0 pt-0"
+              placeholder="Search items"
+              prepend-inner-icon="mdi-magnify"
+            ></v-text-field>
+          </template>
+
           <!-- Utilities -->
-          <div class="utilities">
+          <div v-if="!hideCreation" class="utilities">
             <div class="utilities-item" @click="$emit('click:newFolder')">
               <v-icon class="utilities-icon">mdi-folder-plus</v-icon>
               <span class="utilities-text">New Folder</span>
@@ -152,7 +175,11 @@ export default {
     },
     showSelect: {
       type: Boolean,
-      required: true,
+      default: false,
+    },
+    showSearch: {
+      type: Boolean,
+      default: false,
     },
     itemClass: {
       type: Function,
@@ -161,6 +188,10 @@ export default {
     value: {
       type: Array,
       required: true,
+    },
+    hideCreation: {
+      type: Boolean,
+      default: false,
     },
   },
 
@@ -184,6 +215,7 @@ export default {
       },
     ],
     selected: [],
+    search: null,
   }),
 
   watch: {
@@ -243,7 +275,7 @@ export default {
       align-items: center;
       justify-content: space-between;
 
-      @media screen and (max-width: 600px) {
+      @media screen and (max-width: 960px) {
         flex-direction: column;
         align-items: flex-start;
 
@@ -252,9 +284,17 @@ export default {
         }
       }
 
-      @media screen and (min-width: 600px) {
+      @media screen and (min-width: 960px) {
         .trees {
           max-width: 70%;
+        }
+      }
+
+      .search-box {
+        width: 100%;
+
+        @media screen and (min-width: 960px) {
+          max-width: 300px;
         }
       }
 

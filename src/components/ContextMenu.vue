@@ -146,6 +146,14 @@ export default {
     isFolder() {
       return !this.isFile
     },
+    itemTrashed() {
+      return this.item.deleted_at !== null
+    },
+    parentTrashed() {
+      return this.isFolder
+        ? this.item.parent_folder_trashed === 'Y'
+        : this.item.folder_trashed === 'Y'
+    },
     availableMenus() {
       return this.menus.filter(menu => {
         const name = menu.text.toLowerCase()
@@ -164,8 +172,8 @@ export default {
           return this.setDownload()
         } else if (name === 'restore') {
           return this.setRestore()
-        } else {
-          return true
+        } else if (name === 'delete') {
+          return this.setDelete()
         }
       })
     },
@@ -181,6 +189,7 @@ export default {
 
   methods: {
     ...mapMutations('storage', {
+      increaseUsedSpace: 'INCREASE_USED_SPACE',
       decreaseUsedSpace: 'DECREASE_USED_SPACE',
       removeRecentUpload: 'REMOVE_RECENT_UPLOAD',
     }),
@@ -209,10 +218,19 @@ export default {
       return (this.isFolder || this.isFile) && this.allowMove
     },
     setDownload() {
-      return this.isFile
+      return this.isFile && !this.itemTrashed && !this.parentTrashed
     },
     setRestore() {
-      return this.allowRestore
+      return this.allowRestore && !this.parentTrashed
+    },
+    setDelete() {
+      if (!this.allowRestore && this.forceDelete) {
+        return true
+      } else if (!this.itemTrashed && this.parentTrashed) {
+        return false
+      } else {
+        return true
+      }
     },
     openHandler() {
       this.$emit('open:folder', this.item)
@@ -223,6 +241,55 @@ export default {
     },
     downloadHandler() {
       window.open(this.item.path)
+    },
+    restoreHandler() {
+      let msg = 'Restoring '
+      this.isFile ? fullFileName(this.item) : this.item.name
+      msg += '...'
+
+      this.$overlay.show(msg)
+
+      return this.isFile ? this.restoreFile() : this.restoreFolder()
+    },
+    async restoreFile() {
+      try {
+        await fileApi.restore(this.item.id)
+
+        this.$snackbar.show({
+          text: `Success to restore ${fullFileName(this.item)}`,
+        })
+
+        this.increaseUsedSpace(this.item.size)
+        this.$emit('restore', this.item)
+        this.emitHideEvent()
+      } catch (err) {
+        this.$snackbar.show({
+          color: 'red',
+          text: err?.response?.data?.message || 'Failed to restore file.',
+        })
+      } finally {
+        this.$overlay.hide()
+      }
+    },
+    async restoreFolder() {
+      try {
+        await folderApi.restore(this.item.id)
+
+        this.$snackbar.show({
+          text: `Success to restore ${this.item.name}`,
+        })
+
+        this.increaseUsedSpace(this.item.size)
+        this.$emit('restore', this.item)
+        this.emitHideEvent()
+      } catch (err) {
+        this.$snackbar.show({
+          color: 'red',
+          text: err?.response?.data?.message || 'Failed to restore folder.',
+        })
+      } finally {
+        this.$overlay.hide()
+      }
     },
     deleteHandler() {
       const msgName = isFile(this.item)
@@ -267,6 +334,7 @@ export default {
           text: `${this.item.name} was successfully deleted.`,
         })
 
+        this.decreaseUsedSpace(this.item.size)
         this.$emit('destroy', this.item)
         this.emitHideEvent()
       } catch (err) {

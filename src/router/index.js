@@ -39,6 +39,15 @@ const routes = [
     },
     component: () => import('@/views/Drive.vue'),
   },
+  {
+    path: '/trash',
+    name: 'Trash',
+    meta: {
+      layout: 'dashboard',
+      middleware: 'auth',
+    },
+    component: () => import('@/views/Trash.vue'),
+  },
 ]
 
 const router = new VueRouter({

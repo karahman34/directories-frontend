@@ -18,6 +18,11 @@ export default new Vuex.Store({
         icon: 'mdi-cloud',
         to: { name: 'Drive' },
       },
+      {
+        text: 'Trash',
+        icon: 'mdi-trash-can',
+        to: { name: 'Trash' },
+      },
     ],
     snackbar: {
       text: null,

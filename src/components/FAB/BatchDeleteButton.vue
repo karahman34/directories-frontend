@@ -96,6 +96,7 @@ export default {
         await userApi.softBatchDelete({
           _method: 'DELETE',
           ids: this.listIds,
+          parent_folder_id: this.parentFolderId,
         })
 
         this.$snackbar.show({
