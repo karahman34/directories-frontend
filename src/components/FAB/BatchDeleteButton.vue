@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 import userApi from '@/api/userApi'
 
 export default {
@@ -43,16 +43,20 @@ export default {
     listIds() {
       return this.items.map(item => item.id)
     },
+    trashEnabled() {
+      return this.userState.settings.trash === 'enable'
+    },
   },
 
   methods: {
+    ...mapMutations('storage', {
+      decreaseUsedSpace: 'DECREASE_USED_SPACE',
+    }),
     buttonClickHandler() {
-      this.userState.settings.trash === 'enable'
-        ? this.runSoftBatchDelete()
-        : this.runBatchDelete()
+      this.trashEnabled ? this.runSoftBatchDelete() : this.runBatchDelete()
     },
     emitDeletedEvent() {
-      return this.$emit('deleted', this.listIds)
+      return this.$emit('deleted', this.items)
     },
     async runBatchDelete() {
       this.$overlay.show(`Deleting ${this.itemsLength} items...`)
@@ -68,6 +72,13 @@ export default {
           text: `${this.itemsLength} items was deleted successfully.`,
         })
 
+        // Get total items size.
+        const totalSize = this.items.reduce(
+          (total, item) => total + item.size,
+          0,
+        )
+
+        this.decreaseUsedSpace(totalSize)
         this.emitDeletedEvent()
       } catch (err) {
         this.$snackbar.show({

@@ -158,6 +158,7 @@ export default {
         action: null,
         items: [],
         fromDirectory: null,
+        fromBreadcrumbItems: [],
       },
     }
   },
@@ -291,6 +292,20 @@ export default {
     setCurrentDirectories() {
       this.currentDirectories = this.activeDirectory.directories
     },
+    increaseParentsFolderSize(size) {
+      this.breadcrumbItems.forEach(breadcrumbItem => {
+        breadcrumbItem.directory.size += size
+      })
+
+      this.syncLocalRoot()
+    },
+    decreaseParentsFolderSize(size) {
+      this.breadcrumbItems.forEach(breadcrumbItem => {
+        breadcrumbItem.directory.size -= size
+      })
+
+      this.syncLocalRoot()
+    },
     rowClickHandler(directory) {
       const { value, items } = this.copyMove
       const inCopyMoveAction = items.map(item => item.id)
@@ -337,6 +352,8 @@ export default {
 
       if (this.searchActive) {
         this.itemChange = true
+      } else {
+        this.increaseParentsFolderSize(folder.size)
       }
     },
     folderUpdatedHandler(folder) {
@@ -363,6 +380,8 @@ export default {
 
       if (this.searchActive) {
         this.itemChange = true
+      } else {
+        this.increaseParentsFolderSize(file.size)
       }
     },
     hideContextMenu() {
@@ -397,9 +416,22 @@ export default {
 
       if (this.searchActive) {
         this.itemChange = true
+      } else {
+        this.decreaseParentsFolderSize(item.size)
       }
     },
-    batchItemsDeletedHandler(deletedIds) {
+    batchItemsDeletedHandler(deletedItems) {
+      const deletedIds = []
+
+      deletedItems.forEach(deletedItem => {
+        // Push the id.
+        deletedIds.push(deletedItem.id)
+
+        // Decrease parents folder size.
+        this.decreaseParentsFolderSize(deletedItem.size)
+      })
+
+      // Remove the deleted items from current directory.
       this.activeDirectory.directories = this.currentDirectories.filter(
         dir => !deletedIds.includes(dir.id),
       )
@@ -420,20 +452,30 @@ export default {
       this.copyMove.action = action
       this.copyMove.items = items
       this.copyMove.fromDirectory = this.activeDirectory
+      this.copyMove.fromBreadcrumbItems = this.breadcrumbItems.map(
+        breadcrumbItem => breadcrumbItem.directory,
+      )
     },
     hideCopyMove() {
       this.copyMove.value = false
       this.copyMove.action = null
       this.copyMove.items = []
       this.copyMove.fromDirectory = null
+      this.copyMove.fromBreadcrumbItems = []
     },
     successCopyMoveHandler(item) {
-      const { action, fromDirectory } = this.copyMove
+      const { action, fromDirectory, fromBreadcrumbItems } = this.copyMove
       if (action.toLowerCase() === 'move') {
+        // Delete item from directory
         fromDirectory.directories.splice(
           fromDirectory.directories.findIndex(dir => dir.id === item.id),
           1,
         )
+
+        // Decrease size of its parents folder.
+        fromBreadcrumbItems.forEach(fromBreadcrumbItem => {
+          fromBreadcrumbItem.size -= item.size
+        })
       }
 
       if (isFile(item)) {
