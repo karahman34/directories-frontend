@@ -55,7 +55,15 @@ export default {
       type: Boolean,
       default: false,
     },
+    allowEdit: {
+      type: Boolean,
+      default: false,
+    },
     allowMove: {
+      type: Boolean,
+      default: false,
+    },
+    allowRestore: {
       type: Boolean,
       default: false,
     },
@@ -109,6 +117,11 @@ export default {
           method: () => this.downloadHandler(),
         },
         {
+          icon: 'mdi-restore',
+          text: 'Restore',
+          method: () => this.restoreHandler(),
+        },
+        {
           icon: 'mdi-trash-can',
           text: 'Delete',
           method: () => this.deleteHandler(),
@@ -149,6 +162,8 @@ export default {
           return this.setPreview()
         } else if (name === 'download') {
           return this.setDownload()
+        } else if (name === 'restore') {
+          return this.setRestore()
         } else {
           return true
         }
@@ -185,7 +200,7 @@ export default {
       return this.isImage
     },
     setEdit() {
-      return this.isFolder
+      return this.isFolder && this.allowEdit
     },
     setCopy() {
       return (this.isFolder || this.isFile) && this.allowCopy
@@ -195,6 +210,9 @@ export default {
     },
     setDownload() {
       return this.isFile
+    },
+    setRestore() {
+      return this.allowRestore
     },
     openHandler() {
       this.$emit('open:folder', this.item)

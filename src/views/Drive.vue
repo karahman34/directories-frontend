@@ -42,6 +42,7 @@
     <!-- The Context Menu -->
     <context-menu
       v-if="contextMenu.item !== null"
+      allow-edit
       :allow-copy="!searchActive"
       :allow-move="!searchActive"
       :position-x="contextMenu.x"
