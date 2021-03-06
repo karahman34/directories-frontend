@@ -24,5 +24,23 @@ export default {
       return routeLayout ? `${routeLayout}-layout` : defaultLayout
     },
   },
+
+  watch: {
+    $route: {
+      immediate: true,
+      handler() {
+        this.setWindowTitle()
+      },
+    },
+  },
+
+  methods: {
+    setWindowTitle() {
+      const appTitle = process.env.VUE_APP_TITLE
+      const routeTitle = this.$route.meta?.title
+
+      document.title = !routeTitle ? appTitle : `${routeTitle} - ${appTitle}`
+    },
+  },
 }
 </script>

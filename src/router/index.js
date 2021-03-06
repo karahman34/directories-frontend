@@ -10,6 +10,7 @@ const routes = [
     name: 'Dashboard',
     meta: {
       layout: 'dashboard',
+      title: 'Dashboard',
       middleware: 'auth',
     },
     component: Home,
@@ -18,6 +19,7 @@ const routes = [
     path: '/login',
     name: 'Login',
     meta: {
+      title: 'Login',
       middleware: 'guest',
     },
     component: () => import('@/views/Login.vue'),
@@ -26,6 +28,7 @@ const routes = [
     path: '/register',
     name: 'Register',
     meta: {
+      title: 'Register',
       middleware: 'guest',
     },
     component: () => import('@/views/Register.vue'),
@@ -35,6 +38,7 @@ const routes = [
     name: 'Drive',
     meta: {
       layout: 'dashboard',
+      title: 'Drive',
       middleware: 'auth',
     },
     component: () => import('@/views/Drive.vue'),
@@ -44,6 +48,7 @@ const routes = [
     name: 'Trash',
     meta: {
       layout: 'dashboard',
+      title: 'Trash',
       middleware: 'auth',
     },
     component: () => import('@/views/Trash.vue'),
@@ -53,6 +58,7 @@ const routes = [
     name: 'Settings',
     meta: {
       layout: 'dashboard',
+      title: 'Settings',
       middleware: 'auth',
     },
     component: () => import('@/views/Settings.vue'),
