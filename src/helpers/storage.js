@@ -10,6 +10,17 @@ function byteToGb(bytes) {
   return Number(byteToMb(bytes) / 1024)
 }
 
+function formatStorageSpace(size) {
+  size = size.toString()
+  const dotIndex = size.indexOf('.')
+
+  if (dotIndex === -1) {
+    return size
+  }
+
+  return size.slice(0, dotIndex + 3)
+}
+
 function setSubFoldersObject(subFolders) {
   subFolders.forEach(el => {
     el.directories = null
@@ -28,4 +39,11 @@ function setDirectoryObject(directory) {
   delete directory.sub_folders
 }
 
-export { byteToKb, byteToMb, byteToGb, setDirectoryObject, setSubFoldersObject }
+export {
+  byteToKb,
+  byteToMb,
+  byteToGb,
+  formatStorageSpace,
+  setDirectoryObject,
+  setSubFoldersObject,
+}

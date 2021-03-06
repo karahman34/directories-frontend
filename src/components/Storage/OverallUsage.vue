@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { byteToGb } from '@/helpers/storage'
+import { byteToGb, formatStorageSpace } from '@/helpers/storage'
 
 export default {
   props: {
@@ -38,9 +38,7 @@ export default {
       return byteToGb(this.space)
     },
     usedSpaceInGb() {
-      return byteToGb(this.usedSpace)
-        .toString()
-        .slice(0, 4)
+      return formatStorageSpace(byteToGb(this.usedSpace))
     },
     usedSpaceInPercent() {
       return Math.floor((this.usedSpace / this.space) * 100)
