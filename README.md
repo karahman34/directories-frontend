@@ -1,5 +1,8 @@
 # directories-frontend
 
+## API
+https://github.com/karahman34/directories-api
+
 ## Project setup
 ```
 yarn install
