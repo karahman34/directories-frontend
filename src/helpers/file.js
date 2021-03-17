@@ -1,7 +1,16 @@
+import { tokenName } from '@/plugins/http'
+
 function isImage(file) {
   const pattern = /^image\/.+$/
 
   return isFile(file) && pattern.test(file.mime_type)
+}
+
+function fileAuthSrc(src) {
+  let token = localStorage.getItem(tokenName)
+  token = token.split(' ')[1]
+
+  return `${src}?token=${token}`
 }
 
 function isFile(file) {
@@ -47,4 +56,11 @@ function getIconFile(file) {
   }
 }
 
-export { isImage, fullFileName, getIconFile, isFile, formatFileSize }
+export {
+  isImage,
+  fullFileName,
+  getIconFile,
+  isFile,
+  formatFileSize,
+  fileAuthSrc,
+}

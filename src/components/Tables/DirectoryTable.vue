@@ -108,7 +108,7 @@
             v-if="isImage(item)"
             height="22px"
             max-width="22px"
-            :src="item.path"
+            :src="imgSrcWithToken(item.path)"
           ></v-img>
 
           <!-- Normal Icon -->
@@ -154,6 +154,7 @@ import {
   formatFileSize,
   fullFileName,
   getIconFile,
+  fileAuthSrc,
   isFile,
   isImage,
 } from '@/helpers/file'
@@ -262,6 +263,9 @@ export default {
       e.preventDefault()
 
       this.$emit('contextmenu:row', e, val.item)
+    },
+    imgSrcWithToken(src) {
+      return fileAuthSrc(src)
     },
   },
 }

@@ -1,43 +1,58 @@
 <template>
-  <v-menu
-    v-model="show"
-    :position-x="positionX"
-    :position-y="positionY"
-    :close-on-content-click="false"
-  >
-    <v-list dense>
-      <v-list-item
-        v-for="menu in availableMenus"
-        :key="menu.text"
-        class="px-4"
-        :disabled="menu && menu.loading"
-        @click="menu.method(menu)"
-      >
-        <!-- Icon -->
-        <v-list-item-icon class="mr-1">
-          <v-icon class="text-h6 grey--text text--darken-2">{{
-            menu.icon
-          }}</v-icon>
-        </v-list-item-icon>
+  <div>
+    <!-- Menu -->
+    <v-menu
+      v-model="show"
+      :position-x="positionX"
+      :position-y="positionY"
+      :close-on-content-click="false"
+    >
+      <v-list dense>
+        <v-list-item
+          v-for="menu in availableMenus"
+          :key="menu.text"
+          class="px-4"
+          :disabled="menu && menu.loading"
+          @click="menu.method(menu)"
+        >
+          <!-- Icon -->
+          <v-list-item-icon class="mr-1">
+            <v-icon class="text-h6 grey--text text--darken-2">{{
+              menu.icon
+            }}</v-icon>
+          </v-list-item-icon>
 
-        <!-- Text -->
-        <v-list-item-title class="d-flex align-center">
-          <span class="text-body-2 grey--text text--darken-2">{{
-            menu.text
-          }}</span>
-        </v-list-item-title>
-      </v-list-item>
-    </v-list>
-  </v-menu>
+          <!-- Text -->
+          <v-list-item-title class="d-flex align-center">
+            <span class="text-body-2 grey--text text--darken-2">{{
+              menu.text
+            }}</span>
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+
+    <!-- Preview Image Dialog -->
+    <preview-image-dialog
+      v-if="showPreviewImage"
+      v-model="showPreviewImage"
+      :src="filePathWithToken"
+    ></preview-image-dialog>
+  </div>
 </template>
 
 <script>
 import { mapState, mapMutations, mapGetters } from 'vuex'
-import { fullFileName, isFile, isImage } from '@/helpers/file'
+import { fileAuthSrc, fullFileName, isFile, isImage } from '@/helpers/file'
 import fileApi from '@/api/fileApi'
 import folderApi from '@/api/folderApi'
+import PreviewImageDialog from '@/components/Dialogs/PreviewImageDialog'
 
 export default {
+  components: {
+    PreviewImageDialog,
+  },
+
   props: {
     item: {
       type: Object,
@@ -76,6 +91,7 @@ export default {
   data() {
     return {
       show: true,
+      showPreviewImage: false,
       menus: [
         {
           icon: 'mdi-folder-open',
@@ -177,11 +193,20 @@ export default {
         }
       })
     },
+    filePathWithToken() {
+      if (this.isFolder) {
+        return null
+      }
+
+      return fileAuthSrc(this.item.path)
+    },
   },
 
   watch: {
     show(value) {
       if (!value) {
+        this.showPreviewImage = false
+
         this.emitHideEvent()
       }
     },
@@ -237,10 +262,10 @@ export default {
       this.emitHideEvent()
     },
     previewHandler() {
-      window.open(this.item.path)
+      this.showPreviewImage = true
     },
     downloadHandler() {
-      window.open(this.item.path)
+      window.open(this.filePathWithToken)
     },
     restoreHandler() {
       let msg = 'Restoring '

@@ -45,7 +45,11 @@
               }}</v-icon>
 
               <!-- Image -->
-              <v-img v-else height="100%" :src="file.path"></v-img>
+              <v-img
+                v-else
+                height="100%"
+                :src="imgSrcWithToken(file.path)"
+              ></v-img>
             </v-card>
 
             <!-- File Name -->
@@ -71,7 +75,7 @@
 
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex'
-import { fullFileName, getIconFile, isImage } from '@/helpers/file'
+import { fullFileName, getIconFile, fileAuthSrc, isImage } from '@/helpers/file'
 import ContextMenu from '@/components/ContextMenu'
 
 export default {
@@ -187,6 +191,9 @@ export default {
     },
     fileDeletedHandler() {
       this.setRoot(null)
+    },
+    imgSrcWithToken(src) {
+      return fileAuthSrc(src)
     },
   },
 
