@@ -354,6 +354,7 @@ export default {
           text: `Success to restore ${fullFileName(this.item)}`,
         })
 
+        this.setRecentUploads(null)
         this.increaseUsedSpace(this.item.size)
         this.$emit('restore', this.item)
         this.emitHideEvent()
