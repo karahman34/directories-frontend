@@ -6,7 +6,7 @@ const storedMiddlewares = {
   guest,
 }
 
-function useMiddleware(context, listMiddleware) {
+function useMiddleware(context, ...listMiddleware) {
   const currentMiddleware = listMiddleware.shift()
   const middleware = storedMiddlewares[currentMiddleware]
 
@@ -30,9 +30,7 @@ export default (router, store) => {
     const context = { to, from, next, router, store }
     const middleware = to.meta?.middleware
 
-    if (!Array.isArray(middleware)) {
-      useMiddleware(context, [middleware])
-    } else {
+    if (middleware) {
       useMiddleware(context, middleware)
     }
   })
