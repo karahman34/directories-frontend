@@ -175,21 +175,27 @@ export default {
         const name = menu.text.toLowerCase()
 
         if (name === 'open') {
-          return this.setOpen()
+          return this.isFolder
         } else if (name === 'edit') {
-          return this.setEdit()
+          return this.isFolder && this.allowEdit
         } else if (name === 'copy') {
-          return this.setCopy()
+          return (this.isFolder || this.isFile) && this.allowCopy
         } else if (name === 'move') {
-          return this.setMove()
+          return (this.isFolder || this.isFile) && this.allowMove
         } else if (name === 'preview') {
-          return this.setPreview()
+          return this.isImage
         } else if (name === 'download') {
-          return this.setDownload()
+          return this.isFile && !this.itemTrashed && !this.parentTrashed
         } else if (name === 'restore') {
-          return this.setRestore()
+          return this.allowRestore && !this.parentTrashed
         } else if (name === 'delete') {
-          return this.setDelete()
+          if (!this.allowRestore && this.forceDelete) {
+            return true
+          } else if (!this.itemTrashed && this.parentTrashed) {
+            return false
+          } else {
+            return true
+          }
         }
       })
     },
@@ -220,42 +226,6 @@ export default {
     }),
     emitHideEvent() {
       this.$emit('hide')
-    },
-    setAvailableMenus() {
-      this.setOpen()
-      this.setEdit()
-      this.setPreview()
-      this.setDownload()
-    },
-    setOpen() {
-      return this.isFolder
-    },
-    setPreview() {
-      return this.isImage
-    },
-    setEdit() {
-      return this.isFolder && this.allowEdit
-    },
-    setCopy() {
-      return (this.isFolder || this.isFile) && this.allowCopy
-    },
-    setMove() {
-      return (this.isFolder || this.isFile) && this.allowMove
-    },
-    setDownload() {
-      return this.isFile && !this.itemTrashed && !this.parentTrashed
-    },
-    setRestore() {
-      return this.allowRestore && !this.parentTrashed
-    },
-    setDelete() {
-      if (!this.allowRestore && this.forceDelete) {
-        return true
-      } else if (!this.itemTrashed && this.parentTrashed) {
-        return false
-      } else {
-        return true
-      }
     },
     openHandler() {
       this.$emit('open:folder', this.item)
