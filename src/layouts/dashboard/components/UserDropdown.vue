@@ -2,7 +2,7 @@
   <v-menu offset-y rounded="md">
     <!-- Activator -->
     <template v-slot:activator="{ on }">
-      <v-btn text class="activator d-lg-none" v-on="on">
+      <v-btn text class="activator d-lg-none px-3 ml-4" v-on="on">
         <span>{{ firstName }}</span>
         <v-icon>mdi-chevron-down</v-icon>
       </v-btn>
