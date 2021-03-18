@@ -63,6 +63,21 @@ const routes = [
     },
     component: () => import('@/views/Settings.vue'),
   },
+  {
+    path: '/error/:code',
+    name: 'ErrorPage',
+    meta: {
+      layout: 'blank',
+    },
+    component: () => import('@/views/ErrorPage.vue'),
+  },
+  {
+    path: '*',
+    meta: {
+      layout: 'blank',
+    },
+    component: () => import('@/views/ErrorPage.vue'),
+  },
 ]
 
 const router = new VueRouter({

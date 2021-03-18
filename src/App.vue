@@ -7,12 +7,14 @@
 <script>
 import AuthLayout from '@/layouts/auth/Layout'
 import DashboardLayout from '@/layouts/dashboard/Layout'
+import BlankLayout from '@/layouts/blank/Layout'
 
 export default {
   name: 'App',
 
   components: {
     AuthLayout,
+    BlankLayout,
     DashboardLayout,
   },
 
