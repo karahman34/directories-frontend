@@ -30,8 +30,10 @@ export default (router, store) => {
     const context = { to, from, next, router, store }
     const middleware = to.meta?.middleware
 
-    if (middleware) {
-      useMiddleware(context, middleware)
+    if (!middleware) {
+      return next()
     }
+
+    useMiddleware(context, middleware)
   })
 }
