@@ -32,6 +32,9 @@
       </v-list>
     </v-menu>
 
+    <!-- Share Link -->
+    <input id="share-link" ref="shareLink" type="text" :value="shareLink" />
+
     <!-- Preview Image Dialog -->
     <preview-image-dialog
       v-if="showPreviewImage"
@@ -133,6 +136,21 @@ export default {
           method: () => this.downloadHandler(),
         },
         {
+          icon: 'mdi-share',
+          text: 'Share Link',
+          method: () => this.shareLinkHandler(),
+        },
+        {
+          icon: 'mdi-eye',
+          text: 'Make Public',
+          method: () => this.changeFileVisibility('public'),
+        },
+        {
+          icon: 'mdi-eye-off',
+          text: 'Make Private',
+          method: () => this.changeFileVisibility('private'),
+        },
+        {
           icon: 'mdi-restore',
           text: 'Restore',
           method: () => this.restoreHandler(),
@@ -170,6 +188,11 @@ export default {
         ? this.item.parent_folder_trashed === 'Y'
         : this.item.folder_trashed === 'Y'
     },
+    filePrivate() {
+      if (!this.isFile) return null
+
+      return this.item.is_public === 'N' ? true : false
+    },
     availableMenus() {
       return this.menus.filter(menu => {
         const name = menu.text.toLowerCase()
@@ -186,6 +209,22 @@ export default {
           return this.isImage
         } else if (name === 'download') {
           return this.isFile && !this.itemTrashed && !this.parentTrashed
+        } else if (name === 'share link') {
+          return this.isFile && !this.itemTrashed && !this.parentTrashed
+        } else if (name === 'make public') {
+          return (
+            this.isFile &&
+            this.filePrivate &&
+            !this.itemTrashed &&
+            !this.parentTrashed
+          )
+        } else if (name === 'make private') {
+          return (
+            this.isFile &&
+            !this.filePrivate &&
+            !this.itemTrashed &&
+            !this.parentTrashed
+          )
         } else if (name === 'restore') {
           return this.allowRestore && !this.parentTrashed
         } else if (name === 'delete') {
@@ -206,6 +245,17 @@ export default {
 
       return fileAuthSrc(this.item.path)
     },
+    shareLink() {
+      const routeData = this.$router.resolve({
+        name: 'ShareFile',
+        params: {
+          fileId: this.item.id,
+        },
+      })
+      const link = `${window.origin}${routeData.href}`
+
+      return link
+    },
   },
 
   watch: {
@@ -223,6 +273,7 @@ export default {
       increaseUsedSpace: 'INCREASE_USED_SPACE',
       decreaseUsedSpace: 'DECREASE_USED_SPACE',
       removeRecentUpload: 'REMOVE_RECENT_UPLOAD',
+      setRecentUploads: 'SET_RECENT_UPLOADS',
     }),
     emitHideEvent() {
       this.$emit('hide')
@@ -245,6 +296,55 @@ export default {
       this.$overlay.show(msg)
 
       return this.isFile ? this.restoreFile() : this.restoreFolder()
+    },
+    shareLinkHandler() {
+      if (this.filePrivate) {
+        this.$snackbar.show({
+          color: 'red',
+          text: 'File visibility should be a public to share the file.',
+        })
+      } else {
+        const url = this.$refs.shareLink
+        console.log(url)
+        url.select()
+        url.setSelectionRange(0, 99999)
+
+        document.execCommand('copy')
+
+        this.$snackbar.show({
+          text: 'The link has been inserted into the clipboard.',
+        })
+
+        this.show = false
+      }
+    },
+    async changeFileVisibility(visibility) {
+      this.$overlay.show(`Changing ${fullFileName} visibility...`)
+
+      try {
+        const res = await fileApi.updateVisibility(this.item.id, {
+          _method: 'PATCH',
+          is_public: visibility === 'private' ? 'n' : 'y',
+        })
+        const { data } = res.data
+
+        this.$snackbar.show({
+          text: `Success to change ${fullFileName(
+            this.item,
+          )} visibility to ${visibility}.`,
+        })
+
+        this.$emit('change:visibility', data)
+        this.setRecentUploads(null)
+      } catch (err) {
+        this.$snackbar.show({
+          color: 'red',
+          text:
+            err?.response?.data?.message || 'Failed to change file visibility.',
+        })
+      } finally {
+        this.$overlay.hide()
+      }
     },
     async restoreFile() {
       try {
@@ -388,3 +488,11 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+#share-link {
+  position: fixed;
+  top: -1000px;
+  right: -1000px;
+}
+</style>

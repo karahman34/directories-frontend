@@ -8,6 +8,7 @@
 import AuthLayout from '@/layouts/auth/Layout'
 import DashboardLayout from '@/layouts/dashboard/Layout'
 import BlankLayout from '@/layouts/blank/Layout'
+import PublicLayout from '@/layouts/public/Layout'
 
 export default {
   name: 'App',
@@ -16,6 +17,7 @@ export default {
     AuthLayout,
     BlankLayout,
     DashboardLayout,
+    PublicLayout,
   },
 
   computed: {

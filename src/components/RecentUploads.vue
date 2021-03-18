@@ -69,6 +69,7 @@
       :item="contextMenu.item"
       @hide="hideContextMenu"
       @destroy="fileDeletedHandler"
+      @change:visibility="fileVisibilityChangeHandler"
     ></context-menu>
   </div>
 </template>
@@ -194,6 +195,11 @@ export default {
     },
     imgSrcWithToken(src) {
       return fileAuthSrc(src)
+    },
+    fileVisibilityChangeHandler(file) {
+      this.setRoot(null)
+
+      this.contextMenu.item.is_public = file.is_public
     },
   },
 

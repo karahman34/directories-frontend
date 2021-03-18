@@ -6,6 +6,12 @@ function isImage(file) {
   return isFile(file) && pattern.test(file.mime_type)
 }
 
+function isVideo(file) {
+  const pattern = /^video\/.+$/
+
+  return isFile(file) && pattern.test(file.mime_type)
+}
+
 function fileAuthSrc(src) {
   let token = localStorage.getItem(tokenName)
   token = token.split(' ')[1]
@@ -58,6 +64,7 @@ function getIconFile(file) {
 
 export {
   isImage,
+  isVideo,
   fullFileName,
   getIconFile,
   isFile,

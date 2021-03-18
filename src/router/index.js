@@ -64,6 +64,14 @@ const routes = [
     component: () => import('@/views/Settings.vue'),
   },
   {
+    path: '/share/:fileId',
+    name: 'ShareFile',
+    meta: {
+      layout: 'public',
+    },
+    component: () => import('@/views/Share.vue'),
+  },
+  {
     path: '/error/:code',
     name: 'ErrorPage',
     meta: {

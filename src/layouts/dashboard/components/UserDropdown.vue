@@ -2,15 +2,23 @@
   <v-menu offset-y rounded="md">
     <!-- Activator -->
     <template v-slot:activator="{ on }">
-      <v-btn text class="activator d-lg-none px-3 ml-4" v-on="on">
+      <!-- With Name -->
+      <v-btn
+        text
+        class="activator px-3 ml-4"
+        :class="{ 'd-lg-none': !useName }"
+        v-on="on"
+      >
         <span>{{ firstName }}</span>
         <v-icon>mdi-chevron-down</v-icon>
       </v-btn>
 
+      <!-- With Icon -->
       <v-btn
         rounded
         color="primary"
-        class="d-none d-lg-block px-2 elevation-1"
+        class="d-none px-2 elevation-1"
+        :class="{ 'd-lg-block': !useName }"
         v-on="on"
       >
         <v-icon>mdi-account</v-icon>
@@ -35,6 +43,13 @@
 import { mapActions, mapState } from 'vuex'
 
 export default {
+  props: {
+    useName: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
   computed: {
     ...mapState('auth', {
       user: state => state.user,

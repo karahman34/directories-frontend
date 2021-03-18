@@ -52,6 +52,7 @@
       @copy="setCopyMove('copy', $event)"
       @move="setCopyMove('move', $event)"
       @open:folder="rowClickHandler"
+      @change:visibility="fileVisibilityChangeHandler"
       @edit:folder="
         ;(folderEdit = $event),
           (showFolderUpdateDialog = !showFolderUpdateDialog)
@@ -494,6 +495,10 @@ export default {
       }
 
       return classes
+    },
+    fileVisibilityChangeHandler(file) {
+      const target = this.currentDirectories.find(x => x.id === file.id)
+      target.is_public = file.is_public
     },
   },
 }
