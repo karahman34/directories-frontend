@@ -256,6 +256,9 @@ export default {
 
       return link
     },
+    itemFullName() {
+      return !this.isFile ? this.item.name : fullFileName(this.item)
+    },
   },
 
   watch: {
@@ -289,11 +292,7 @@ export default {
       window.open(this.filePathWithToken)
     },
     restoreHandler() {
-      let msg = 'Restoring '
-      this.isFile ? fullFileName(this.item) : this.item.name
-      msg += '...'
-
-      this.$overlay.show(msg)
+      this.$overlay.show(`Restoring ${this.itemFullName}...`)
 
       return this.isFile ? this.restoreFile() : this.restoreFolder()
     },
@@ -319,7 +318,7 @@ export default {
       }
     },
     async changeFileVisibility(visibility) {
-      this.$overlay.show(`Changing ${fullFileName} visibility...`)
+      this.$overlay.show(`Changing ${this.itemFullName} visibility...`)
 
       try {
         const res = await fileApi.updateVisibility(this.item.id, {
@@ -329,9 +328,7 @@ export default {
         const { data } = res.data
 
         this.$snackbar.show({
-          text: `Success to change ${fullFileName(
-            this.item,
-          )} visibility to ${visibility}.`,
+          text: `Success to change ${this.itemFullName} visibility to ${visibility}.`,
         })
 
         this.$emit('change:visibility', data)
@@ -372,7 +369,7 @@ export default {
         await folderApi.restore(this.item.id)
 
         this.$snackbar.show({
-          text: `Success to restore ${this.item.name}`,
+          text: `Success to restore ${this.itemFullName}`,
         })
 
         this.increaseUsedSpace(this.item.size)
@@ -388,10 +385,7 @@ export default {
       }
     },
     deleteHandler() {
-      const msgName = isFile(this.item)
-        ? fullFileName(this.item)
-        : this.item.name
-      this.$overlay.show(`Deleting ${msgName}...`)
+      this.$overlay.show(`Deleting ${this.itemFullName}...`)
 
       const isFolder = !isFile(this.item)
 
@@ -406,7 +400,7 @@ export default {
         await fileApi.delete(this.item.id)
 
         this.$snackbar.show({
-          text: `${fullFileName(this.item)} was successfully deleted.`,
+          text: `${this.itemFullName} was successfully deleted.`,
         })
 
         this.decreaseUsedSpace(this.item.size)
@@ -427,7 +421,7 @@ export default {
         await folderApi.delete(this.item.id)
 
         this.$snackbar.show({
-          text: `${this.item.name} was successfully deleted.`,
+          text: `${this.itemFullName} was successfully deleted.`,
         })
 
         this.decreaseUsedSpace(this.item.size)
@@ -447,9 +441,7 @@ export default {
         await fileApi.softDelete(this.item.id)
 
         this.$snackbar.show({
-          text: `${fullFileName(
-            this.item,
-          )} was successfully moved to trash bin.`,
+          text: `${this.itemFullName} was successfully moved to trash bin.`,
         })
 
         this.$emit('destroy', this.item)
@@ -470,7 +462,7 @@ export default {
         await folderApi.softDelete(this.item.id)
 
         this.$snackbar.show({
-          text: `${this.item.name} was successfully moved to trash bin.`,
+          text: `${this.itemFullName} was successfully moved to trash bin.`,
         })
 
         this.$emit('destroy', this.item)
