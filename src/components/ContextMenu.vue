@@ -305,7 +305,6 @@ export default {
         })
       } else {
         const url = this.$refs.shareLink
-        console.log(url)
         url.select()
         url.setSelectionRange(0, 99999)
 
