@@ -9,6 +9,7 @@ import AuthLayout from '@/layouts/auth/Layout'
 import DashboardLayout from '@/layouts/dashboard/Layout'
 import BlankLayout from '@/layouts/blank/Layout'
 import PublicLayout from '@/layouts/public/Layout'
+import { setWindowTitle } from '@/helpers/app'
 
 export default {
   name: 'App',
@@ -33,17 +34,10 @@ export default {
     $route: {
       immediate: true,
       handler() {
-        this.setWindowTitle()
+        const routeTitle = this.$route.meta?.title
+
+        setWindowTitle(routeTitle)
       },
-    },
-  },
-
-  methods: {
-    setWindowTitle() {
-      const appTitle = process.env.VUE_APP_TITLE
-      const routeTitle = this.$route.meta?.title
-
-      document.title = !routeTitle ? appTitle : `${routeTitle} - ${appTitle}`
     },
   },
 }
