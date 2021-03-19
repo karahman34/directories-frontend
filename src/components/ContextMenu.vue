@@ -277,6 +277,7 @@ export default {
       decreaseUsedSpace: 'DECREASE_USED_SPACE',
       removeRecentUpload: 'REMOVE_RECENT_UPLOAD',
       setRecentUploads: 'SET_RECENT_UPLOADS',
+      changeRecentUploadVisibility: 'CHANGE_RECENT_UPLOAD_VISIBILITY',
     }),
     emitHideEvent() {
       this.$emit('hide')
@@ -331,9 +332,10 @@ export default {
           text: `Success to change ${this.itemFullName} visibility to ${visibility}.`,
         })
 
+        this.changeRecentUploadVisibility(data)
         this.$emit('change:visibility', data)
-        this.setRecentUploads(null)
       } catch (err) {
+        console.log(err)
         this.$snackbar.show({
           color: 'red',
           text:

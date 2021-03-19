@@ -13,6 +13,10 @@ export default {
       state.recentUploads.unshift(file)
     }
   },
+  CHANGE_RECENT_UPLOAD_VISIBILITY(state, file) {
+    const target = state.recentUploads.find(x => x.id === file.id)
+    target.is_public = file.is_public
+  },
   REMOVE_RECENT_UPLOAD(state, file) {
     if (Array.isArray(state.recentUploads)) {
       const targetIndex = state.recentUploads.findIndex(

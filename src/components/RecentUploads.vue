@@ -196,10 +196,8 @@ export default {
     imgSrcWithToken(src) {
       return fileAuthSrc(src)
     },
-    fileVisibilityChangeHandler(file) {
+    fileVisibilityChangeHandler() {
       this.setRoot(null)
-
-      this.contextMenu.item.is_public = file.is_public
     },
   },
 
