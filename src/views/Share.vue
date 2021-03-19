@@ -70,6 +70,7 @@ import { byteToGb, byteToKb, byteToMb } from '@/helpers/storage'
 import moment from 'moment'
 import { videoPlayer } from 'vue-video-player'
 import 'video.js/dist/video-js.css'
+import { setWindowTitle } from '@/helpers/app'
 
 export default {
   components: {
@@ -157,6 +158,8 @@ export default {
           src: this.srcWithToken,
           type: this.file.mime_type,
         })
+
+        setWindowTitle(this.fileName)
       } catch (err) {
         const errCode = err?.response?.status || 500
 
