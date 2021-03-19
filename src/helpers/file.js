@@ -14,6 +14,11 @@ function isVideo(file) {
 
 function fileAuthSrc(src) {
   let token = localStorage.getItem(tokenName)
+
+  if (!token) {
+    throw new Error('token not found.')
+  }
+
   token = token.split(' ')[1]
 
   return `${src}?token=${token}`
