@@ -7,7 +7,7 @@
 
     <v-btn text :to="{ name: 'Dashboard' }">
       <v-icon>mdi-campfire</v-icon>
-      <span>Go back home</span>
+      <span class="ml-2">Go back home</span>
     </v-btn>
   </div>
 </template>
