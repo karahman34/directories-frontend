@@ -71,6 +71,7 @@ import moment from 'moment'
 import { videoPlayer } from 'vue-video-player'
 import 'video.js/dist/video-js.css'
 import { setWindowTitle } from '@/helpers/app'
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -90,6 +91,9 @@ export default {
   },
 
   computed: {
+    ...mapState('auth', {
+      loggedInState: state => state.loggedIn,
+    }),
     fileId() {
       return this.$route.params.fileId
     },
@@ -135,6 +139,7 @@ export default {
     },
     srcWithToken() {
       if (!this.file) return null
+      if (!this.loggedInState) return this.file.path
 
       return fileAuthSrc(this.file.path)
     },
